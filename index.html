@@ -1770,6 +1770,22 @@ $('ai-croq').src=ASSETS.croquette;$('ai-pel').src=ASSETS.pelote;
 if(ASSETS.eclat)document.querySelectorAll('.gemme').forEach(g=>{const i=document.createElement('img');i.src=ASSETS.eclat;i.alt='';i.className='ic-eclat';g.replaceWith(i)});
 $('ai-repli').innerHTML=ICO_REPLI;$('ai-reprise').innerHTML=ICO_REPRISE;
 
+// ================= Mise à l'échelle =================
+// Sur les écrans courts (navigateur avec ses barres, petit téléphone, ordinateur), on réduit légèrement
+// l'ensemble et on limite la largeur pour que les onglets tiennent sans défiler.
+const ECH={larg:420,haut:880};
+function ajusteEchelle(){
+  const app=document.querySelector('.app');if(!app)return;
+  const cs=getComputedStyle(document.documentElement),st=parseFloat(cs.paddingTop)||0,sb=parseFloat(cs.paddingBottom)||0;
+  const w=window.innerWidth,h=window.innerHeight-st-sb;
+  const z=Math.max(.7,Math.min(1,h/ECH.haut,w/360));
+  const vh=h/z,vw=w/z,mw=Math.min(540,vw,vh/2.1);
+  app.style.zoom=z===1?'':z;app.style.maxWidth=Math.floor(mw)+'px';app.style.height=Math.floor(vh)+'px';
+}
+addEventListener('resize',ajusteEchelle);addEventListener('orientationchange',ajusteEchelle);
+if(window.visualViewport)visualViewport.addEventListener('resize',ajusteEchelle);
+ajusteEchelle();
+
 // ================= Audio : tout est synthétisé (Web Audio), aucun fichier =================
 const Son=(()=>{
   let lofiBus,ac=null,maitre,sfxG,armesG,musG,musBus,ambBus,bruitBuf,bruitLong,suivant=0,pas=0,amb=null,evt={},ambCle='';const dernier={};
@@ -1974,7 +1990,7 @@ $('b-son').onclick=()=>{Son.init();reg.hidden=!reg.hidden;majReglages()};
 $('r-vib').onchange=e=>{S.reg.vib=e.target.checked;Son.clic();vibre('leger')};
 $('r-notif').onchange=e=>{S.reg.notif=e.target.checked;Son.clic();if(S.reg.notif)demandeNotif(true)};
 // ---- Sauvegarde : export / import d'un code ----
-function codeSauvegarde(){S.vu=Date.now();return 'RONRON1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))))}
+function codeSauvegarde(){return 'RONRON1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))))}
 function lisCode(c){c=(c||'').trim().replace(/\s+/g,'');if(!c.startsWith('RONRON1:'))throw 0;const o=JSON.parse(decodeURIComponent(escape(atob(c.slice(8)))));if(!o||!Array.isArray(o.grille))throw 0;return o}
 $('b-export').onclick=()=>{
   Son.clic();const code=codeSauvegarde();
@@ -2017,7 +2033,10 @@ $('v-armes').onchange=()=>Son.tir('pistol');
 
 // ================= Sauvegarde et gains hors ligne =================
 const CLE='escouade-ronron-v1';
-function sauve(){S.vu=Date.now();try{localStorage.setItem(CLE,JSON.stringify(S))}catch(e){}}
+// S.vu = dernier instant où le jeu tournait au premier plan. Il ne bouge pas tant que l'appli est en arrière-plan,
+// même si des minuteries continuent de tourner (sinon les gains hors ligne ne se déclenchaient jamais).
+let enFond=false;
+function sauve(){if(!enFond)S.vu=Date.now();try{localStorage.setItem(CLE,JSON.stringify(S))}catch(e){}}
 function charge(){try{const s=JSON.parse(localStorage.getItem(CLE));if(s)return normalise(s)}catch(e){}return null}
 function armeDeDepart(){if(!S.grille.some(t=>t)&&S.or<coutAchat())S.grille[0]=nivAchat()}
 // Gains hors ligne : on simule l'escouade actuelle (sa vraie puissance) à mi-régime.
@@ -2047,7 +2066,9 @@ function horsLigne(){
   const h=Math.floor(Math.min(sec,cap)/3600),m=Math.floor(Math.min(sec,cap)%3600/60);
   modale('Bon retour !','Ton escouade a chassé pendant '+(h?h+' h ':'')+m+' min'+(sec>cap?' (plafond atteint)':'')+(r.stade>r.depart?' et avancé du stade '+r.depart+' au stade '+r.stade:'')+'.','+'+fmt(r.or)+' croquettes','Récupérer');
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden){sauve();Son.suspend();planifieNotif()}else{horsLigne();S.vu=Date.now();Son.reprend();annuleNotif()}});
+function passeEnFond(){if(enFond)return;sauve();enFond=true;Son.suspend();planifieNotif()}
+function revientAuPremierPlan(){if(!enFond)return;enFond=false;horsLigne();S.vu=Date.now();sauve();Son.reprend();annuleNotif()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)passeEnFond();else revientAuPremierPlan()});
 document.addEventListener('pointerdown',()=>Son.init(),true);document.addEventListener('keydown',()=>Son.init(),true);
 setInterval(sauve,5000);setInterval(majHud,200);
 
@@ -2086,8 +2107,8 @@ window.claude?.hot?.ready?window.claude.hot.ready(demarre):demarre(window.claude
       if(actif&&actif.dataset.p!=='arm'){document.getElementById('t-arm').click();return}
       P.App.minimizeApp();
     });
-    P.App.addListener('pause',()=>{try{sauve();Son.suspend()}catch(e){}});
-    P.App.addListener('resume',()=>{try{horsLigne();S.vu=Date.now();Son.reprend()}catch(e){}});
+    P.App.addListener('pause',()=>{try{passeEnFond()}catch(e){}});
+    P.App.addListener('resume',()=>{try{revientAuPremierPlan()}catch(e){}});
   }
 })();
 </script>
