@@ -197,7 +197,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .amelio div{min-width:0}
 .amelio h3{margin:0;font-size:.9rem;font-weight:600;line-height:1.2}
 .amelio p{margin:0;font-size:.76rem;line-height:1.25;color:var(--brume);font-variant-numeric:tabular-nums}
-.amelio .btn{min-width:88px;padding:5px 8px;font-size:.84rem;border-radius:9px}
+.amelio .lots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.amelio .btn{min-width:0;width:50px;padding:3px 2px;font-size:.78rem;border-radius:8px;line-height:1.1}.amelio .btn small{font-size:.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}.amelio .btn:disabled small{opacity:.6}
 .amelio .btn small{font-size:.72rem}
 #p-ent .liste,#p-ren .liste{gap:4px}
 /* Les améliorations se répartissent la hauteur disponible au lieu de laisser un vide en bas */
@@ -219,7 +219,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 #p-ent .amelio,#p-ren .amelio{padding:6px 8px 6px 14px}
 #p-ent .amelio h3,#p-ren .amelio h3{font-size:1rem}
 #p-ent .amelio p,#p-ren .amelio p{font-size:.82rem}
-#p-ent .amelio .btn,#p-ren .amelio .btn{min-width:100px;padding:8px 10px;font-size:.92rem}}
+#p-ent .amelio .btn,#p-ren .amelio .btn{width:56px;padding:5px 2px;font-size:.84rem}}
 #p-ent,#p-ren{gap:7px}
 .amelio{min-height:0}
 #p-ren .bloc{padding:8px 12px;gap:5px}#p-ren{gap:8px}#p-ren .ren-tete h2{margin:0;font-size:1.05rem}#p-ren #b-ren{padding-top:7px;padding-bottom:7px}#p-arm{gap:9px}#p-ren .amelio{padding-top:2px;padding-bottom:2px}#p-ren .amelio .btn{padding-top:4px;padding-bottom:4px}
@@ -724,6 +724,7 @@ const TR_BOSS={'blindé':'Armored','invocateur':'Summoner','régénérant':'Rege
 const pl=(n,a,b)=>(parseFloat(n)===1?a:b);
 const ENP=[
  [R('Stade #'),m=>'Stage '+m[1]],
+ [R('Max \\+#'),m=>'Max +'+m[1]],
  [R('# règles? · (.+)'),m=>m[1]+' rules · '+trS(m[2])],
  [R('(.+), (.+)\\. # règles? en jeu, éclats des boss x#'),m=>trS(m[1])+', '+trS(m[2])+'. '+m[3]+(parseFloat(m[3])>1?' rules':' rule')+' in play, boss shards x'+m[4]],
  [R('Lieu maîtrisé : (.+), (.+)'),m=>'Place mastered: '+trS(m[1])+', '+trS(m[2])],
@@ -2192,20 +2193,23 @@ function majDefis(){
 $('l-def').addEventListener('click',e=>{const b=e.target.closest('[data-defi]');if(b&&!b.disabled)lanceDefi(b.dataset.defi)});
 
 // ================= Interface : entraînement et renaissance =================
+// Achat par 1, par 10 ou au maximum possible : n niveaux et leur coût total, bornés par le plafond et le solde
+function lotAchat(d,l,solde,n){let k=0,c=0;while(k<n&&!(d.max&&l+k>=d.max)){const x=d.cout(l+k);if(c+x>solde)break;c+=x;k++}return{k,c}}
 function listeAmelios(el,defs,obj,monnaie){
-  el.innerHTML=defs.map(d=>'<div class="amelio"><div><h3>'+d.nom+' <span style="color:var(--brume);font-weight:500">niv. '+obj[d.k]+'</span></h3><p>'+d.desc(obj[d.k])+'</p></div><button class="btn" id="'+monnaie+'-'+d.k+'"></button></div>').join('');
-  for(const d of defs){$(monnaie+'-'+d.k).onclick=()=>{
-    const l=obj[d.k];if(d.max&&l>=d.max)return;const c=d.cout(l);
-    if(monnaie==='or'){if(S.or<c)return;S.or-=c}else{if(S.pel<c)return;S.pel-=c}
-    obj[d.k]++;Son.achat();calcEquipe();majGrille();majListes();majHud();
-  }}
+  el.innerHTML=defs.map(d=>'<div class="amelio"><div><h3>'+d.nom+' <span style="color:var(--brume);font-weight:500">niv. '+obj[d.k]+'</span></h3><p>'+d.desc(obj[d.k])+'</p></div><div class="lots" id="'+monnaie+'-'+d.k+'"><button class="btn" data-n="1"></button><button class="btn second" data-n="10"></button><button class="btn second" data-n="max"></button></div></div>').join('');
+  el.onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;const d=defs.find(x=>monnaie+'-'+x.k===b.parentElement.id);if(!d)return;
+    const l=obj[d.k],solde=monnaie==='or'?S.or:S.pel,{k,c}=lotAchat(d,l,solde,b.dataset.n==='max'?9999:+b.dataset.n);if(!k)return;
+    if(monnaie==='or')S.or-=c;else S.pel-=c;obj[d.k]+=k;Son.achat();calcEquipe();majGrille();majListes();majHud()};
 }
 function majListes(){listeAmelios($('l-ent'),AMELIOS,S.up,'or');listeAmelios($('l-ren'),RENS,S.rb,'pel');majBoutons()}
 function majBoutons(){
   for(const[defs,obj,m,solde]of[[AMELIOS,S.up,'or',S.or],[RENS,S.rb,'pel',S.pel]]){
-    for(const d of defs){const b=$(m+'-'+d.k);if(!b)continue;const l=obj[d.k];
-      if(d.max&&l>=d.max){b.disabled=true;b.innerHTML='Max'}
-      else{const c=d.cout(l);b.disabled=solde<c;b.innerHTML='Améliorer<small>'+fmt(c)+(m==='pel'?' pelote'+(c>1?'s':''):'')+'</small>'}}
+    for(const d of defs){const z=$(m+'-'+d.k);if(!z)continue;const l=obj[d.k],fini=d.max&&l>=d.max;
+      z.querySelectorAll('[data-n]').forEach(b=>{const n=b.dataset.n==='max'?9999:+b.dataset.n;
+        if(fini){b.disabled=true;b.innerHTML=b.dataset.n==='1'?'Max':'';b.hidden=b.dataset.n!=='1';return}b.hidden=false;
+        const{k,c}=lotAchat(d,l,n===9999?solde:Infinity,n);const peut=k>0&&c<=solde;b.disabled=!peut;
+        const h=b.dataset.n==='1'?'+1':b.dataset.n==='10'?'+10':'Max'+(k?' +'+k:'');
+        b.innerHTML=h+'<small>'+(k?fmt(c):'')+'</small>'})}
   }
 }
 let renConfirm=0;
