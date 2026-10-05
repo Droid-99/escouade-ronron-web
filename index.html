@@ -137,7 +137,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .segment.fonds{grid-template-columns:repeat(3,1fr)}.segment.fonds button{font-size:.7rem;padding:6px 2px;line-height:1.1}
 .reg-nbmus{display:inline-flex;align-items:center;gap:3px;margin-left:6px;text-decoration:none;vertical-align:middle}.reg-nbmus svg{width:14px;height:14px}
 .coll-boite{max-width:460px}
-.coll-onglets{grid-template-columns:repeat(6,1fr)}
+.segment.aide-onglets.coll-onglets{grid-template-columns:repeat(6,1fr)}
 .coll-grille.c-recits{grid-template-columns:1fr}.ct.recit{font-weight:500;font-size:.72rem}.ct-titre{grid-column:1/-1;display:flex;align-items:center;gap:6px;margin:6px 0 0;font:600 .74rem var(--f-texte);color:var(--brume)}.ct-titre svg{width:14px;height:14px}
 .coll-detail .ligne{margin:4px 0}.coll-detail .ligne b{display:inline;margin-right:6px}
 #scene{z-index:75}.scene-boite{max-width:460px;padding:0;overflow:hidden;gap:0;text-align:left;display:block}
@@ -165,6 +165,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .ct .ct-ok{position:absolute;top:3px;right:3px;width:14px;height:14px;border-radius:50%;background:#7fe0c0;display:grid;place-items:center}.ct .ct-ok svg{width:10px;height:10px}
 .ct.lieu{aspect-ratio:16/10;background-size:cover;background-position:center;padding:0;overflow:hidden}
 .ct.lieu.sil{background-image:none!important}
+.ct .ct-dps{position:absolute;left:0;right:0;bottom:3px;display:flex;justify-content:center;align-items:center;gap:2px;font:600 .62rem var(--f-texte);color:#ffd36b;text-shadow:0 1px 2px #000}.ct .ct-dps svg{width:9px;height:9px}.coll-detail .leg-portee{display:inline;color:#7fe0c0;font-size:.78rem}
 .ct .ct-q{font:1.1rem var(--f-titre);color:var(--brume)}
 .ct.boss{border-style:dashed}
 .ct-sep{grid-column:1/-1;height:1px;background:var(--trait);margin:2px 0}
@@ -304,6 +305,12 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .place.pleine.fermee canvas{opacity:.4;filter:grayscale(1)}
 .place.pleine.fermee .cad{position:absolute;top:4px;right:4px}
 .place small{font-size:.64rem}
+.place.pleine{aspect-ratio:auto;justify-content:flex-start;padding:4px 0 6px}.place .perk{font-style:normal;font-size:.55rem;line-height:1.15;color:var(--brume);padding:0 3px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.btn-leg{flex-direction:column;gap:1px}.btn-leg .leg-sous{font:600 .55rem var(--f-texte);white-space:nowrap;line-height:1}
+.btn-leg.leg-charge img{opacity:.35;filter:grayscale(1)}.btn-leg.leg-charge .leg-sous{color:var(--encre)}.btn-leg.leg-charge{background:conic-gradient(rgba(255,211,107,.28) calc(var(--rech)*360deg),transparent 0) padding-box}
+.btn-leg.leg-pret{border-color:#ffd36b;box-shadow:0 0 0 2px rgba(255,211,107,.35)}.btn-leg.leg-actif{border-color:#ffd36b;background:rgba(255,211,107,.18);animation:legPulse 1s ease-in-out infinite alternate}.btn-leg.leg-actif .leg-sous{color:#ffd36b}
+@keyframes legPulse{to{box-shadow:0 0 12px rgba(255,211,107,.6)}}.btn-leg .dps{white-space:nowrap;display:flex;align-items:center;gap:2px;font:600 .52rem var(--f-texte);color:#ffd36b;line-height:1}.btn-leg .dps svg{width:8px;height:8px}
+.dps-txt{color:#ffd36b;font-weight:600;display:inline-flex;align-items:center;gap:3px}.dps-txt svg{width:10px;height:10px}
 .esc-titre{margin:10px 0 5px;font-size:.86rem;font-weight:600;color:var(--brume);text-transform:uppercase;letter-spacing:.04em}
 .cartes.mini{grid-template-columns:repeat(4,1fr);gap:6px}
 .cartes.mini .carte{padding:5px 3px 6px;gap:1px;border-radius:10px}
@@ -476,7 +483,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
     <div class="aide-tete"><h2>Aide</h2><button class="btn second" id="b-aide-ok">Fermer</button></div>
     <div class="segment aide-onglets"><button data-rub="ecran">Écran</button><button data-rub="armes">Armes</button><button data-rub="ennemis">Ennemis</button><button data-rub="onglets">Onglets</button><button data-rub="succes">Succès</button></div>
     <div class="rub" id="rub-ecran"><div class="ai" id="ai-clavier" hidden><span class="ai-i"><span class="kbd">1-6</span></span><div><b>Clavier (ordinateur)</b><span>1 à 6 : onglets · A : acheter · F : fusionner · R : repli · V : vitesse · I : aide · C : collection · Échap : fermer.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2 8 8 2-8 2-2 8-2-8-8-2 8-2z" fill="#ffd36b"/></svg></span><div><b>Étincelle</b><span>Coup critique : dégâts doublés (plus avec les familiers).</span></div></div><div class="ai"><span class="ai-i"><span class="ai-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h6.5a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6.5a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2H20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span></span><div><b>Collection</b><span>Chats, armes légendaires, lieux, bestiaire et musiques. Ce qui reste à trouver apparaît en silhouette.</span></div></div><div class="ai"><span class="ai-i"><img id="ai-croq" alt=""></span><div><b>Croquettes</b><span>Achètent armes et bonus.</span></div></div><div class="ai"><span class="ai-i"><i class="gemme"></i></span><div><b>Éclats de lune</b><span>Gagnés en défis et sur les boss. Invoquent des familiers.</span></div></div><div class="ai"><span class="ai-i"><img id="ai-pel" alt=""></span><div><b>Pelotes</b><span>Gagnées en renaissant. Bonus permanents et recrues.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-coeur"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#ff86ad"/></svg></span></span><div><b>Points de vie</b><span>Les créatures au contact mordent. À zéro, l’escouade est décimée : retour au stade de départ, toutes les pelotes en poche et la moitié des croquettes perdues. Les pelotes restent au stade de la chute (↺) : reviens-y sans tomber pour les récupérer.</span></div></div><div class="ai"><span class="ai-i"><span id="ai-repli" class="ai-btn"></span></span><div><b>Se replier</b><span>Fige le combat pour réfléchir. Le stade recommencera. Impossible sous 40 % de vie, pendant une vague spéciale, à ton stade record et tant que des pelotes perdues sont à récupérer.</span></div></div><div class="ai"><span class="ai-i"><span id="ai-reprise" class="ai-btn"></span></span><div><b>Relancer</b><span>Retour au combat, depuis le début du stade.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-btn ai-txt">x4</span></span><div><b>Vitesse</b><span>Accélère le jeu en x4, et jusqu’à x8 pour rejouer les stades sous ton record.</span></div></div><div class="ai"><span class="ai-i"><span class="puce">Pluie</span></span><div><b>Météo</b><span>Change à chaque stade, avec son effet.</span></div></div></div>
-    <div class="rub" id="rub-armes" hidden><div class="ai" id="ai-leg" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h13l3-2h4v5h-4l-3-2H9l-2 5H4l1.5-5H2z" fill="#ffd36b"/><path d="M8 3l1 2.2 2.4.3-1.8 1.6.5 2.4L8 8.3 5.9 9.5l.5-2.4-1.8-1.6 2.4-.3z" fill="#ffd36b"/></svg></span><div><b>Arme légendaire</b><span>Unique, elle tombe rarement sur le boss d’un lieu. Le chef de l’escouade la porte : elle tire un niveau au-dessus de ta meilleure arme, avec un effet spécial. Le bouton étoile de l’armurerie permet d’en changer.</span></div></div><div class="ai" id="ai-gel" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7" stroke="#bfe6ff" stroke-width="2" stroke-linecap="round"/></svg></span><div><b>Souffle glacé</b><span>Givre gèle toutes les créatures toutes les 10 s (les boss sont seulement ralentis).</span></div></div><div class="ai" id="ai-meteore" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="16" r="4.5" fill="#ffd36b"/><path d="M11 13l9-9M10 10l7-7M13.5 15l7-7" stroke="#ffd36b" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><b>Pluie d’étoiles</b><span>Comète fait tomber toutes les 12 s une comète sur la créature la plus résistante.</span></div></div><div class="ai" id="ai-ronron" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2.5" fill="currentColor"/><path d="M10 6a9 9 0 0 1 0 12M14 3.5a13 13 0 0 1 0 17M18 1.5a16 16 0 0 1 0 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div><b>Ronron sismique</b><span>Caramel lance toutes les 8 s une onde qui blesse toutes les créatures et repousse celles qui ne sont pas des boss.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="3" fill="currentColor"/><circle cx="16" cy="9" r="3" fill="currentColor"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0M10.5 19a5.5 5.5 0 0 1 11 0" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><div><b>Esprit d’équipe</b><span>Chaque chat armé tire au moins avec 25 % de la puissance de la meilleure arme : équipe tes 5 chats.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt" style="color:#ffd36b">✸ 73</span></span><div><b>Dégâts</b><span>Dégâts par seconde de l’arme. Chaque niveau les double environ.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt ai-nv">7</span></span><div><b>Niveau</b><span>Deux armes du même niveau fusionnent en niveau +1.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-ok"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#1b1424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Équipée</b><span>Un chat la porte. Les meilleures armes sont équipées seules.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-sym">➜</span></span><div><b>Perçant</b><span>La balle traverse jusqu’à 3 ennemis.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-sym">✸</span></span><div><b>Explosif</b><span>Blesse aussi les ennemis autour de l’impact.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-sym">ϟ</span></span><div><b>Chaîne</b><span>Un éclair rebondit sur 2 ennemis proches.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 L10 8 L14 12 L9 17 L12 22 M14 12 L20 14 M9 17 L4 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Fissurée</b><span>Plus aucune fusion possible pour cette arme : touche-la pour la revendre.</span></div></div></div>
+    <div class="rub" id="rub-armes" hidden><div class="ai" id="ai-leg" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h13l3-2h4v5h-4l-3-2H9l-2 5H4l1.5-5H2z" fill="#ffd36b"/><path d="M8 3l1 2.2 2.4.3-1.8 1.6.5 2.4L8 8.3 5.9 9.5l.5-2.4-1.8-1.6 2.4-.3z" fill="#ffd36b"/></svg></span><div><b>Arme légendaire</b><span>Unique : le boss d’un lieu précis la laisse parfois en mourant. Touche le bouton étoile de l’armurerie pour la confier au chef pendant 40 s : elle tire un niveau au-dessus de ta meilleure arme, avec un effet spécial. Elle se recharge ensuite en 10 minutes de jeu (le cercle se remplit). Le chiffre jaune donne ses dégâts par seconde. Tu la gardes après une renaissance.</span></div></div><div class="ai" id="ai-gel" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7" stroke="#bfe6ff" stroke-width="2" stroke-linecap="round"/></svg></span><div><b>Souffle glacé</b><span>Givre gèle toutes les créatures toutes les 10 s (les boss sont seulement ralentis).</span></div></div><div class="ai" id="ai-meteore" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="16" r="4.5" fill="#ffd36b"/><path d="M11 13l9-9M10 10l7-7M13.5 15l7-7" stroke="#ffd36b" stroke-width="1.8" stroke-linecap="round"/></svg></span><div><b>Pluie d’étoiles</b><span>Comète fait tomber toutes les 12 s une comète sur la créature la plus résistante.</span></div></div><div class="ai" id="ai-ronron" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2.5" fill="currentColor"/><path d="M10 6a9 9 0 0 1 0 12M14 3.5a13 13 0 0 1 0 17M18 1.5a16 16 0 0 1 0 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div><b>Ronron sismique</b><span>Caramel lance toutes les 8 s une onde qui blesse toutes les créatures et repousse celles qui ne sont pas des boss.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="3" fill="currentColor"/><circle cx="16" cy="9" r="3" fill="currentColor"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0M10.5 19a5.5 5.5 0 0 1 11 0" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><div><b>Esprit d’équipe</b><span>Chaque chat armé tire au moins avec 25 % de la puissance de la meilleure arme : équipe tes 5 chats.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt" style="color:#ffd36b">✸ 73</span></span><div><b>Dégâts</b><span>Dégâts par seconde de l’arme. Chaque niveau les double environ.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt ai-nv">7</span></span><div><b>Niveau</b><span>Deux armes du même niveau fusionnent en niveau +1.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-ok"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#1b1424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Équipée</b><span>Un chat la porte. Les meilleures armes sont équipées seules.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-sym">➜</span></span><div><b>Perçant</b><span>La balle traverse jusqu’à 3 ennemis.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-sym">✸</span></span><div><b>Explosif</b><span>Blesse aussi les ennemis autour de l’impact.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-sym">ϟ</span></span><div><b>Chaîne</b><span>Un éclair rebondit sur 2 ennemis proches.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 L10 8 L14 12 L9 17 L12 22 M14 12 L20 14 M9 17 L4 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Fissurée</b><span>Plus aucune fusion possible pour cette arme : touche-la pour la revendre.</span></div></div></div>
     <div class="rub" id="rub-ennemis" hidden><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3a9 9 0 1 0 6 15.5A7.5 7.5 0 0 1 15 3z" fill="currentColor"/><circle cx="9" cy="12" r="1.3" fill="#1b1424"/><circle cx="13" cy="13" r="1.3" fill="#1b1424"/></svg></span><div><b>Cauchemar</b><span>Après le stade 100, les décors reviennent assombris avec une règle en plus (ennemis plus rapides, boss blindés…). Chaque boucle multiplie les éclats des boss.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h9M2 12h11M4 16h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="12" r="4" fill="currentColor"/></svg></span><div><b>Rapide</b><span>Traits de vitesse. Peu de vie, fonce sur toi.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3-1 8-6 7-6-7-1-8z" fill="#c9d1e0" stroke="#1b1424" stroke-width="1.5"/></svg></span><div><b>Costaud</b><span>Bouclier. Lent mais 2,6 fois plus de vie.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12L3 6l2 7 3-2 1 4zM12 12l9-6-2 7-3-2-1 4z" fill="currentColor"/><circle cx="12" cy="13" r="3" fill="currentColor"/></svg></span><div><b>Volant</b><span>Ailes. Reste en l’air.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><div><b>Diviseur</b><span>Ligne pointillée. Se coupe en deux minis.</span></div></div><div class="ai" id="ai-t-soigneur" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5z" fill="#fff" stroke="#1b1424" stroke-width="1.5"/></svg></span><div><b>Soigneur</b><span>Croix au-dessus de la tête. Soigne régulièrement les créatures autour de lui.</span></div></div><div class="ai" id="ai-t-bouclier" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="19" rx="3" fill="#8a93a8" stroke="#1b1424" stroke-width="1.5"/><path d="M12 5v14" stroke="#c9d1e0" stroke-width="2"/></svg></span><div><b>Porte-bouclier</b><span>Grand bouclier devant lui. Les créatures juste derrière (arc en pointillés) subissent moitié moins de dégâts.</span></div></div><div class="ai" id="ai-t-teleporteur" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a1 1 0 0 1 2 0 3 3 0 0 1-5 2 5 5 0 0 1 7-6 7 7 0 0 1-7 11 9 9 0 0 1-6-11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div><b>Téléporteur</b><span>Spirale au-dessus de la tête. Disparaît et réapparaît plus près de l’escouade.</span></div></div><div class="ai" id="ai-t-kamikaze" hidden><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="14" r="7" fill="currentColor"/><path d="M14 8q2-4 5-4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 1.5l.8 1.8 1.9.2-1.4 1.3.4 1.9-1.7-1-1.7 1 .4-1.9-1.4-1.3 1.9-.2z" fill="#ffd36b"/></svg></span><div><b>Kamikaze</b><span>Mèche allumée. Rapide et fragile, il explose au contact et arrache 18 % de la vie de l’escouade. Abats-le avant.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.5 5.5 6 .7-4.5 4 1.3 6L12 16l-5.3 3.2 1.3-6-4.5-4 6-.7z" fill="#ffd36b"/></svg></span><div><b>Doré</b><span>Étoiles qui tournent. Rare, butin x8.</span></div></div><div class="ai"><span class="ai-i"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l2-9 4 4 2-6 2 6 4-4 2 9z" fill="#ffd36b"/></svg></span><div><b>Boss</b><span>Couronne. À battre avant la fin du chrono. Peut être blindé, invocateur ou régénérant.</span></div></div><div class="ai"><span class="ai-i ai-boss"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 9-8 11-4.6-2-8-6-8-11V5z" fill="currentColor"/></svg></span><div><b>Boss blindé</b><span>Subit 40 % de dégâts en moins, mais te laisse 40 s au lieu de 30.</span></div></div><div class="ai"><span class="ai-i ai-boss"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 21v-7a5 5 0 0 1 10 0v7l-1.7-1.2L8.1 21l-1.6-1.2L4.9 21l-1.7-1.2z" fill="currentColor"/><path d="M12.5 17V9a5 5 0 0 1 10 0v12l-1.7-1.2-1.7 1.2-1.6-1.2-1.6 1.2-1.7-1.2z" fill="currentColor" opacity=".75"/></svg></span><div><b>Boss invocateur</b><span>Appelle régulièrement deux créatures en renfort.</span></div></div><div class="ai"><span class="ai-i ai-boss"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z" fill="currentColor"/><path d="M12 9v6M9 12h6" stroke="#1b1424" stroke-width="2.2" stroke-linecap="round"/></svg></span><div><b>Boss régénérant</b><span>Récupère 2 % de ses PV chaque seconde.</span></div></div></div>
     <div class="rub" id="rub-onglets" hidden><div class="ai"><span class="ai-i"><span class="ai-txt">Armes</span></span><div><b>Armurerie</b><span>Acheter et fusionner les armes.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt">Équipe</span></span><div><b>Escouade</b><span>Choisir quelles recrues combattent. Le bonus de chaque chat s’applique à toute l’escouade.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt">Familiers</span></span><div><b>Familiers</b><span>Créatures qui donnent des bonus. Deux familiers identiques fusionnent en un grade supérieur (D à SSS). Touche pour équiper ou ranger.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt">Défis</span></span><div><b>Défis</b><span>4 épreuves quotidiennes contre des éclats. Le drapeau abandonne l’épreuve en cours.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt">Bonus</span></span><div><b>Bonus</b><span>Améliorations en croquettes.</span></div></div><div class="ai"><span class="ai-i"><span class="ai-txt">Renaître</span></span><div><b>Renaissance</b><span>Disponible dès le stade 8. Tu repars au stade 1 : croquettes, armes et améliorations Bonus sont remises à zéro. Tu gagnes des pelotes selon les stades franchis dans cette vie (ceux sautés avec « Départ lancé » ne comptent pas) ; chaque pelote gagnée donne +2 % de dégâts pour toujours. Tes chats, familiers et éclats de lune sont conservés. Les pelotes achètent les améliorations permanentes de l’onglet Renaître et des recrues dans l’onglet Équipe.</span></div></div></div>
     <div class="rub" id="rub-succes" hidden></div>
@@ -661,7 +668,7 @@ const EN={
  'achève les créatures sous 20 % de vie':'finishes off creatures under 20% health','gèle les créatures touchées':'freezes the creatures it hits','énormes explosions':'huge explosions','chaque créature abattue soigne l’escouade':'every creature shot down heals the squad',
  'Chaque tir est un coup critique':'Every shot is a critical hit','Ralentit les créatures touchées':'Slows the creatures it hits','Un éclair rebondit sur 4 ennemis':'Lightning bounces to 4 enemies',
  'Achève les créatures sous 20 % de vie':'Finishes off creatures under 20% health','Gèle les créatures touchées':'Freezes the creatures it hits','Énormes explosions':'Huge explosions','Chaque créature abattue soigne l’escouade':'Every creature shot down heals the squad',
- 'Unique, elle tombe rarement sur le boss d’un lieu. Le chef de l’escouade la porte : elle tire un niveau au-dessus de ta meilleure arme, avec un effet spécial. Le bouton étoile de l’armurerie permet d’en changer.':'Unique, it rarely drops from a place’s boss. The squad leader carries it: it fires one level above your best weapon, with a special effect. The star button in the armory lets you switch.',
+ 'Unique : le boss d’un lieu précis la laisse parfois en mourant. Touche le bouton étoile de l’armurerie pour la confier au chef pendant 40 s : elle tire un niveau au-dessus de ta meilleure arme, avec un effet spécial. Elle se recharge ensuite en 10 minutes de jeu (le cercle se remplit). Le chiffre jaune donne ses dégâts par seconde. Tu la gardes après une renaissance.':'Unique: the boss of one specific place sometimes leaves it behind when it dies. Tap the star button in the armory to hand it to the leader for 40 s: it fires one level above your best weapon, with a special effect. It then recharges over 10 minutes of play (the circle fills up). The yellow number shows its damage per second. You keep it after a rebirth.',
  'Nuage':'Cloud','Praline':'Praline','Cannelle':'Cinnamon','Sésame':'Sesame','Biscotte':'Rusk','Givre':'Frost','Comète':'Comet','Opale':'Opal','Charbon':'Coal','Nébuleuse':'Nebula',
  'Souffle glacé : gèle les créatures toutes les 10 s':'Icy Breath: freezes the creatures every 10 s','Pluie d’étoiles : une comète frappe toutes les 12 s':'Starfall: a comet strikes every 12 s',
  'Souffle glacé':'Icy Breath','Pluie d’étoiles':'Starfall','Givre !':'Frost!',
@@ -671,11 +678,12 @@ const EN={
  'Dégâts par seconde de l’arme. Chaque niveau les double environ.':'Damage per second of the weapon. Each level roughly doubles it.',
  'Dégâts par seconde de cette arme':'Damage per second of this weapon',
  'Veilleur':'Night watcher','Vis 25 scènes avec tes chats':'Live 25 scenes with your cats','Mémoire de l’escouade':'Squad memory','Termine les 5 histoires des chats':'Finish the 5 cats’ tales',
+ 'Portée par le chef':'Carried by the leader','Choisie':'Selected','ta meilleure arme +1':'your best weapon +1',
  'Continuer':'Continue','Récits':'Stories','Scène':'Scene','Répliques':'Banter','Trouvailles':'Finds','Dilemmes':'Dilemmas','Présages':'Omens','Histoires':'Tales','Voix du Cauchemar':'Voice of the Nightmare',
  'Les scènes vécues entre deux stades. Touche-en une pour la relire.':'Scenes lived between two stages. Tap one to read it again.',
  'Cheffe de meute':'Pack leader','Vieux briscard':'Old hand','Lectrice des fins':'Reader of endings','Forge rallumée':'Forge relit','Fille des brumes':'Daughter of the mists',
  'Collection':'Collection','Chats':'Cats','Lieux':'Places','Bestiaire':'Bestiary','Musiques':'Music','Musiques de la collection':'Music collection','Équiper':'Equip','Ranger':'Unequip',
- 'Touche une case pour en savoir plus.':'Tap a tile to learn more.','Les armes légendaires tombent rarement sur les boss. Une seule est portée, par le chef de l’escouade.':'Legendary weapons rarely drop from bosses. Only one is carried, by the squad leader.',
+ 'Touche une case pour en savoir plus.':'Tap a tile to learn more.','Quand tu abats un boss, il peut parfois laisser une arme légendaire. Chaque légendaire vient d’un lieu précis. Touche le bouton étoile de l’armurerie pour la confier au chef pendant 40 s ; elle se recharge ensuite en 10 minutes.':'When you shoot down a boss, it may sometimes leave a legendary weapon behind. Each legendary comes from one specific place. Tap the star button in the armory to hand it to the leader for 40 s; it then recharges in 10 minutes.',
  'Les lieux visités.':'Places visited.','Les créatures croisées et les boss vaincus.':'Creatures met and bosses defeated.','Touche une musique pour l’écouter en fond.':'Tap a track to play it in the background.',
  'Chats, armes légendaires, lieux, bestiaire et musiques. Ce qui reste à trouver apparaît en silhouette.':'Cats, legendary weapons, places, bestiary and music. What is still to be found shows as a silhouette.',
  'Boîte à musique':'Music box','Gouttes d’égout':'Sewer Drops','Valse des épouvantails':'Scarecrow Waltz','Comptine de porcelaine':'Porcelain Rhyme','Chant des pioches':'Pickaxe Song','Jungle sous verre':'Jungle Under Glass',
@@ -988,7 +996,7 @@ const ARC_PERK={mandarine:{t:'equipe',v:.05,nom:'Cheffe de meute'},grisou:{t:'or
 const FAM_RECIT={rep:'Répliques',trou:'Trouvailles',dil:'Dilemmes',pres:'Présages',arc:'Histoires',cau:'Voix du Cauchemar'};
 
 // ================= Réglages d'équilibrage =================
-const C={VS_PV:.6,LEG:.05,KILLS:20,BOSS_T:30,BOSS_M:10,HP0:10,HPG:1.47,OR0:2,ORG:1.37,DPS0:4,DPSG:2.05,ACH0:10,ACHG:1.12,SLOTS:12,REN_MIN:8,OFF_EFF:0.5,
+const C={LEG_DUREE:40,LEG_RECH:600,VS_PV:.6,LEG:.05,KILLS:20,BOSS_T:30,BOSS_M:10,HP0:10,HPG:1.47,OR0:2,ORG:1.37,DPS0:4,DPSG:2.05,ACH0:10,ACHG:1.12,SLOTS:12,REN_MIN:8,OFF_EFF:0.5,
   CRIT0:.05,CRITM:2,TICKETS:3,DEFI_T:60,INVOC:60,ECL_BOSS:2,ESPRIT:.25,RONRON_T:8,PELX:1.004};
 const PLACES=[1,4,10,18,28];
 const W=480,H=270,SOL=138;
@@ -1036,16 +1044,18 @@ const LEGS=[
  {id:'phenix',nom:'Plume du Phénix',type:'rifle',effet:'soin',info:'chaque créature abattue soigne l’escouade',bi:17}
 ];
 const LID=Object.fromEntries(LEGS.map((l,i)=>[l.id,i]));
-const legEq=()=>S.legEq&&S.leg.includes(S.legEq)?LEGS[LID[S.legEq]]:null;
+const legEq=()=>{if(S.leg.length&&!S.leg.includes(S.legEq))S.legEq=S.leg[0];return S.legEq?LEGS[LID[S.legEq]]:null};
 // Une légendaire tire comme une arme d'un niveau au-dessus de la meilleure arme de l'armurerie
 const nivLeg=()=>Math.max(1,...S.grille)+1;
+// Dégâts par seconde d'une légendaire, comparables à ceux affichés sous les armes de l'armurerie
+const dpsLeg=l=>dpsArme(nivLeg())*multCad()*(LEG_MULT[l.effet]||1);
 const nivC=c=>c.leg?nivLeg():S.grille[c.g];
 const typeC=c=>c.leg?c.leg.type:armeType(S.grille[c.g]);
 const imgC=c=>c.leg?(pret(IM.leg[LID[c.leg.id]])?IM.leg[LID[c.leg.id]]:imgArme(nivLeg())):imgArme(S.grille[c.g]);
 function tenteLeg(bi){
   const l=LEGS.find(x=>x.bi===bi&&!S.leg.includes(x.id));if(!l)return;
   if(Math.random()>C.LEG*(1+boucleC(S.stade)))return;
-  S.leg.push(l.id);if(!S.legEq)S.legEq=l.id;calcEquipe();majGrille();majLeg();
+  S.leg.push(l.id);if(!S.legEq)S.legEq=l.id;if(S.leg.length===1)S.legRech=0;calcEquipe();majGrille();majLeg();
   toast('Arme légendaire : '+l.nom+', '+l.info,'legende');Son.pieces();vibre('succes');succesVerif();verifRecrues();
 }
 
@@ -1260,7 +1270,7 @@ function neuf(){return{or:0,pel:0,pelTot:0,ecl:0,stade:1,kills:0,rec:1,best:1,gr
   coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(12).fill(null),petEq:[null,null,null],
   defis:{jour:'',tickets:{boss:3,chasse:3,mine:3,potager:3},niv:{boss:1,potager:1},rec:{chasse:0,mine:0}},
   auto:{fus:false,ach:false},vitesse:1,son:{fond:'musique',sfx:.8,armes:.35},
-  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:600}}}
+  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:600}}}
 function fusionne(def,o){
   if(o===undefined||o===null)return def;
   if(Array.isArray(def))return Array.isArray(o)?o:def;
@@ -1329,7 +1339,7 @@ function perkCible(e){let m=1;if(e.boss)m*=1+perkSum('boss');let c=0;for(const x
 let escouade=[];
 function calcEquipe(){
   const armes=S.grille.map((t,i)=>[t,i]).filter(a=>a[0]>0).sort((a,b)=>b[0]-a[0]||a[1]-b[1]);
-  const rs=actifs(),pris=new Set(),res=new Array(rs.length).fill(-1),L=legEq();
+  const rs=actifs(),pris=new Set(),res=new Array(rs.length).fill(-1),L=legT>0?legEq():null;
   if(L&&rs.length){pris.add(0);res[0]=-2}
   for(const[t,i]of armes){
     if(pris.size>=rs.length)break;
@@ -1694,7 +1704,7 @@ function maj(dt){
   }
   balles=balles.filter(b=>!b.mort);enn=enn.filter(e=>e.pv>0);
   for(const f of flottes){f.t+=dt;f.y-=22*dt}flottes=flottes.filter(f=>f.t<.9);
-  majPouvoirs(dt);
+  majPouvoirs(dt);majLegTemps(dt,0);
   for(const f of fx)f.t+=dt;fx=fx.filter(f=>f.t<(f.vie||.3));
   if(!D){fenT+=dt;if(fenT>=15){S.taux=S.taux?S.taux*.6+(gagneFen/fenT)*.4:gagneFen/fenT;gagneFen=0;fenT=0}}
   autoT-=dt;if(autoT<=0){autoT=1.2;automatismes()}
@@ -1874,6 +1884,7 @@ let avant=0;
 function boucle(t){if(![1,4,8].includes(S.vitesse)){S.vitesse=4;majVitesse()}if(S.vitesse===8&&!x6Ok()){S.vitesse=4;majVitesse()}const dt=Math.min(.1,(t-avant)/1000||0),v=S.vitesse||1;avant=t;
   if(enScene){dessine(0);requestAnimationFrame(boucle);return}
   if(!enPause&&!D&&joueurLa())S.recits.tActif+=dt;
+  if(!enPause)majLegTemps(0,dt);
   majRetraite(dt);
   // En repli : la scène continue tant que l'escouade s'en va (balles en vol, ennemis qui avancent), puis seule la météo bouge
   const simule=!enPause||RET.mode==='sortie';
@@ -1993,7 +2004,7 @@ function majGrille(){
     return '<button class="slot plein'+(eq.has(i)?' equipe':'')+(sel===i?' sel':'')+(derniereFusion===i?' fusion':'')+(fis.has(i)?' fissure':'')+'" data-i="'+i+'" aria-label="'+armeNom(t)+', niveau '+t+(tr?', '+TRAITS[tr].nom:'')+(fis.has(i)?', fissurée':'')+'">'+(fis.has(i)?FISSURE:'')+
       '<span class="nv">'+t+'</span>'+(eq.has(i)?'<span class="eq" title="Équipée par un chat" aria-label="équipée"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#1b1424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'')+svgArme(t)+'<span class="nom">'+armeNom(t)+'</span><span class="dps" title="Dégâts par seconde de cette arme">'+ICO_DPS+fmt(dpsArme(t)*multCad())+'</span>'+(tr?'<span class="trait" title="'+TRAITS[tr].nom+' : '+TRAITS[tr].aide+'" aria-label="'+TRAITS[tr].nom+'">'+TRAITS[tr].sym+'</span>':'')+'</button>';
   }).join('');
-  derniereFusion=-1;
+  derniereFusion=-1;majLeg();
 }
 function action(a,b){
   if(a===b)return;const ta=S.grille[a],tb=S.grille[b];
@@ -2047,7 +2058,7 @@ function majEscouade(){
   let h='';
   for(let i=0;i<5;i++){
     const id=S.esc[i],r=id?RECRUES[RID[id]]:null,ouverte=i<np;
-    if(r)h+='<div class="place pleine'+(ouverte?'':' fermee')+'" role="button" tabindex="0" data-r="'+r.id+'" aria-label="'+r.nom+', retirer"><canvas aria-hidden="true"></canvas><span>'+r.nom+'</span>'+(ouverte?'':'<i class="cad">'+ICO_CADENAS+'</i><small>Stade '+PLACES[i]+'</small>')+'</div>';
+    if(r)h+='<div class="place pleine'+(ouverte?'':' fermee')+'" role="button" tabindex="0" data-r="'+r.id+'" aria-label="'+r.nom+', retirer"><canvas aria-hidden="true"></canvas><span>'+r.nom+'</span><em class="perk">'+perkTexte(r.perk).replace(/ %/g,'&nbsp;%')+(ARC_PERK[r.id]&&(S.recits.arcs[r.id]||0)>=3?' · '+perkTexte(ARC_PERK[r.id]).replace(/ %/g,'&nbsp;%'):'')+'</em>'+(ouverte?'':'<i class="cad">'+ICO_CADENAS+'</i><small>Stade '+PLACES[i]+'</small>')+'</div>';
     else if(ouverte)h+='<div class="place vide"><b>+</b><span>Libre</span></div>';
     else h+='<div class="place fermee"><i>'+ICO_CADENAS+'</i><small>Stade '+PLACES[i]+'</small></div>';
   }
@@ -2152,7 +2163,7 @@ $('b-ren').onclick=()=>{
   const g=gainPel();if(!g||D)return;
   if(Date.now()>renConfirm){renConfirm=Date.now()+4000;$('b-ren').textContent='Toucher encore pour confirmer';return}
   renConfirm=0;
-  const garde={pel:S.pel+g,pelTot:S.pelTot+g,rb:S.rb,nbRen:S.nbRen+1,best:S.best,coll:S.coll,esc:S.esc,vus:S.vus,pets:S.pets,petEq:S.petEq,ecl:S.ecl,defis:S.defis,auto:S.auto,son:S.son,vitesse:S.vitesse,reg:S.reg,succes:S.succes,stats:S.stats,introVue:S.introVue,lang:S.lang,leg:S.leg,legEq:S.legEq,bossVus:S.bossVus,recits:S.recits};
+  const garde={pel:S.pel+g,pelTot:S.pelTot+g,rb:S.rb,nbRen:S.nbRen+1,best:S.best,coll:S.coll,esc:S.esc,vus:S.vus,pets:S.pets,petEq:S.petEq,ecl:S.ecl,defis:S.defis,auto:S.auto,son:S.son,vitesse:S.vitesse,reg:S.reg,succes:S.succes,stats:S.stats,introVue:S.introVue,lang:S.lang,leg:S.leg,legEq:S.legEq,legRech:S.legRech,bossVus:S.bossVus,recits:S.recits};
   S=Object.assign(neuf(),garde);S.stade=1+3*S.rb.start;S.rec=S.stade;S.depart=S.stade;
   enn=[];balles=[];bossActif=false;sel=-1;gagneFen=0;fenT=0;VS=null;majVsOverlay();
   Son.renaissance();calcEquipe();majGrille();majListes();majEscouade();majHud();toast('Renaissance : +'+g+' pelote'+(g>1?'s':''),'renaissance');succesVerif();majRenSignal();
@@ -2180,7 +2191,7 @@ function majHud(){
     else{const ks=killsStade();r.style.width=(100*Math.min(S.kills,ks)/ks)+'%';$('v-prog').textContent=Math.min(S.kills,ks)+' / '+ks}
     
   }
-  $('v-dps').textContent='Puissance : '+fmt(dpsTotal())+' / s';{const b=$('b-pause'),d=!repliPossible();if(b&&b.disabled!==d)b.disabled=d}
+  majLeg();  $('v-dps').textContent='Puissance : '+fmt(dpsTotal())+' / s';{const b=$('b-pause'),d=!repliPossible();if(b&&b.disabled!==d)b.disabled=d}
   const c=coutAchat(),plein=S.grille.indexOf(0)<0;
   $('v-achat').textContent=plein?'armurerie pleine':armeNom(nivAchat())+' · '+fmt(c);
   $('b-achat').disabled=plein||S.or<c;
@@ -2440,7 +2451,7 @@ function majColl(){
   $('coll-total').textContent=Math.round(100*a/b)+' %';
   const g=$('coll-grille');g.className='coll-grille c-'+collRub;let h='';
   if(collRub==='chats')h=RECRUES.map(r=>{const ok=S.coll.includes(r.id);return '<button class="ct'+(ok?'':' sil')+(collSel===r.id?' sel':'')+'" data-k="'+r.id+'" aria-label="'+(ok?r.nom:'???')+'"><canvas></canvas>'+(ok&&S.esc.slice(0,5).includes(r.id)?ICO_OK:'')+'</button>'}).join('');
-  if(collRub==='armes')h=LEGS.map((l,i)=>{const ok=S.leg.includes(l.id),src=(ASSETS.leg||[])[i];return '<button class="ct'+(ok?'':' sil')+(collSel===l.id?' sel':'')+'" data-k="'+l.id+'" aria-label="'+(ok?l.nom:'???')+'">'+(src?'<img src="'+src.src+'" alt="">':'<span class="ct-q">?</span>')+(ok&&S.legEq===l.id?ICO_OK:'')+'</button>'}).join('');
+  if(collRub==='armes')h=LEGS.map((l,i)=>{const ok=S.leg.includes(l.id),src=(ASSETS.leg||[])[i];return '<button class="ct'+(ok?'':' sil')+(collSel===l.id?' sel':'')+'" data-k="'+l.id+'" aria-label="'+(ok?l.nom:'???')+'">'+(src?'<img src="'+src.src+'" alt="">':'<span class="ct-q">?</span>')+(ok&&S.legEq===l.id?ICO_OK:'')+(ok?'<span class="ct-dps">'+ICO_DPS+fmt(dpsLeg(l))+'</span>':'')+'</button>'}).join('');
   if(collRub==='lieux')h=BIOMES.map((bm,i)=>{const ok=lieuVu(i),f=ASSETS.fonds[i];return '<button class="ct lieu'+(ok?'':' sil')+(collSel===i?' sel':'')+'" data-k="'+i+'" aria-label="'+(ok?bm.nom:'???')+'"'+(ok&&f?' style="background-image:url('+f+')"':'')+'>'+(ok?'':'<span class="ct-q">?</span>')+'</button>'}).join('');
   if(collRub==='best'){
     h=TYPES_VUS.map(t=>{const ok=S.vus.includes(t);return '<button class="ct'+(ok?'':' sil')+(collSel==='t'+t?' sel':'')+'" data-k="t'+t+'" aria-label="'+(ok?TYPES_ENN[t].nom:'???')+'">'+ICO_TYPE(t)+'</button>'}).join('');
@@ -2466,10 +2477,10 @@ function ICO_TYPE(t){
 }
 function majCollDetail(){
   const d=$('coll-detail'),k=collSel;let h='';
-  if(k===null){h='<span>'+{recits:'Les scènes vécues entre deux stades. Touche-en une pour la relire.',chats:'Touche une case pour en savoir plus.',armes:'Les armes légendaires tombent rarement sur les boss. Une seule est portée, par le chef de l’escouade.',lieux:'Les lieux visités.',best:'Les créatures croisées et les boss vaincus.',mus:'Touche une musique pour l’écouter en fond.'}[collRub]+'</span>'}
+  if(k===null){h='<span>'+{recits:'Les scènes vécues entre deux stades. Touche-en une pour la relire.',chats:'Touche une case pour en savoir plus.',armes:'Quand tu abats un boss, il peut parfois laisser une arme légendaire. Chaque légendaire vient d’un lieu précis. Touche le bouton étoile de l’armurerie pour la confier au chef pendant 40 s ; elle se recharge ensuite en 10 minutes.',lieux:'Les lieux visités.',best:'Les créatures croisées et les boss vaincus.',mus:'Touche une musique pour l’écouter en fond.'}[collRub]+'</span>'}
   else if(collRub==='recits'){const r=RECITS.find(x=>x.id===k);h=S.recits.vus.includes(k)?lignesScene(r):'<b>???</b>'}
   else if(collRub==='chats'){const r=RECRUES[RID[k]],ok=S.coll.includes(r.id),a=ARC_PERK[r.id],fini=a&&(S.recits.arcs[r.id]||0)>=3;h=ok?'<b>'+r.nom+'</b>'+perkTexte(r.perk)+(fini?'<br>'+a.nom+' : '+perkTexte(a):''):'<b>???</b>'+(r.deb.rare!==undefined?'???':estSpecial(r.deb)?debTexte(r.deb):'Stade '+r.deb.stade+(r.deb.pel?' · '+r.deb.pel+' pelotes':''))}
-  else if(collRub==='armes'){const l=LEGS[LID[k]],ok=S.leg.includes(l.id);h=ok?'<b>'+l.nom+'</b>'+TY_NOMS[l.type]+' · '+l.info.charAt(0).toUpperCase()+l.info.slice(1)+'<br><button class="btn" data-eq-leg="'+l.id+'">'+(S.legEq===l.id?'Ranger':'Équiper')+'</button>':'<b>???</b>'+(lieuVu(l.bi)?'Boss : '+BIOMES[l.bi].boss:'Boss : ???')}
+  else if(collRub==='armes'){const l=LEGS[LID[k]],ok=S.leg.includes(l.id);h=ok?'<b>'+l.nom+'</b>'+TY_NOMS[l.type]+' · '+l.info.charAt(0).toUpperCase()+l.info.slice(1)+'<br>'+T('Niveau')+' '+nivLeg()+' ('+T('ta meilleure arme +1')+') · <span class="dps-txt">'+ICO_DPS+fmt(dpsLeg(l))+' / s</span>'+(S.legEq===l.id?'<br><b class="leg-portee">'+T('Choisie')+'</b>':'<br><button class="btn" data-eq-leg="'+l.id+'">'+T('Équiper')+'</button>'):'<b>???</b>'+(lieuVu(l.bi)?'Boss : '+BIOMES[l.bi].boss:'Boss : ???')}
   else if(collRub==='lieux'){const i=+k,bm=BIOMES[i];h=lieuVu(i)?'<b>'+bm.nom+'</b>Stades '+(i*5+1)+' à '+(i*5+5)+' · Boss : '+(S.bossVus.includes(i)?bm.boss:'???'):'<b>???</b>'}
   else if(collRub==='best'){
     if(k[0]==='t'){const t=k.slice(1),ok=S.vus.includes(t),d0=TYPES_ENN[t];h=ok?'<b>'+d0.nom+'</b>'+(d0.info?d0.info.charAt(0).toUpperCase()+d0.info.slice(1):'La créature de base de chaque lieu.'):'<b>???</b>'}
@@ -2483,18 +2494,31 @@ $('coll-grille').addEventListener('click',e=>{
   if(collRub==='mus'){if(!musOk(k)){Son.clic();return}S.son.fond=k;Son.init();Son.volumes();Son.clic();majReglages();majColl();return}
   collSel=collRub==='lieux'?+k:k;Son.clic();majColl();
 });
-$('coll-detail').addEventListener('click',e=>{const b=e.target.closest('[data-eq-leg]');if(!b)return;const id=b.dataset.eqLeg;S.legEq=S.legEq===id?null:id;Son.achat();calcEquipe();majGrille();majLeg();majColl()});
+$('coll-detail').addEventListener('click',e=>{const b=e.target.closest('[data-eq-leg]');if(!b)return;const id=b.dataset.eqLeg;S.legEq=id;Son.achat();calcEquipe();majGrille();majLeg();majColl()});
 coll.addEventListener('click',e=>{if(e.target===coll)fermeColl();const b=e.target.closest('.coll-onglets [data-cr]');if(b){collRub=b.dataset.cr;collSel=null;Son.clic();majColl()}});
 $('b-coll-ok').onclick=fermeColl;$('b-coll').onclick=()=>ouvreColl();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!coll.hidden)fermeColl()});
 // Bouton de l'arme légendaire dans l'armurerie (visible dès la première trouvée)
+// La légendaire est un pouvoir temporaire : on la déchaîne 40 s (temps de jeu), puis elle se recharge 10 minutes (temps réel, jeu ouvert)
+let legT=0;
+function declencheLeg(){
+  if(!S.leg.length||legT>0||S.legRech>0||enRetraite())return false;
+  legT=C.LEG_DUREE;S.legRech=C.LEG_RECH;calcEquipe();majGrille();Son.pieces();vibre('fort');
+  const L=legEq();if(L){const p=posChat(0);flotte(p.x+20,p.y-46,T(L.nom)+' !','#ffd36b')}return true;
+}
+function majLegTemps(dtJeu,dtReel){
+  if(legT>0){legT-=dtJeu;if(legT<=0){legT=0;calcEquipe();majGrille()}}
+  else if(S.legRech>0)S.legRech=Math.max(0,S.legRech-dtReel);
+}
 function majLeg(){
   const b=$('b-leg');if(!b)return;const has=S.leg.length>0;b.hidden=!has;b.parentElement.classList.toggle('avec-leg',has);if(!has)return;
-  const L=legEq(),i=L?LID[L.id]:-1,src=i>=0&&(ASSETS.leg||[])[i];
-  const h=L?(src?'<img src="'+src.src+'" alt="">':'<b>★</b>'):'<svg class="leg-vide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+  const L=legEq(),i=L?LID[L.id]:-1,src=i>=0&&(ASSETS.leg||[])[i],etat=legT>0?'actif':S.legRech>0?'charge':'pret';
+  b.className='btn second btn-leg leg-'+etat;b.style.setProperty('--rech',etat==='charge'?(1-S.legRech/C.LEG_RECH):1);
+  const sous=etat==='actif'?Math.ceil(legT)+' s':etat==='charge'?Math.ceil(S.legRech/60)+' min':'<span class="dps">'+ICO_DPS+fmt(L?dpsLeg(L):0)+'</span>';
+  const h=L?(src?'<img src="'+src.src+'" alt="">':'<b>★</b>')+'<span class="leg-sous">'+sous+'</span>':'<svg class="leg-vide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
   if(b.dataset.h!==h){b.dataset.h=h;b.innerHTML=h}b.setAttribute('aria-label',L?'Arme légendaire : '+L.nom:'Arme légendaire : aucune');
 }
-$('b-leg').onclick=()=>ouvreColl('armes');
+$('b-leg').onclick=()=>{if(!declencheLeg())ouvreColl('armes')};
 
 // ================= Mise à l'échelle =================
 // Sur les écrans courts (navigateur avec ses barres, petit téléphone, ordinateur), on réduit légèrement
