@@ -139,6 +139,8 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .btn-leg{padding:4px;display:grid;place-items:center;position:relative}.btn-leg img{width:44px;height:26px;object-fit:contain}.btn-leg .leg-vide{width:22px;height:22px;color:var(--brume)}
 .segment.fonds{grid-template-columns:repeat(3,1fr)}.segment.fonds button{font-size:.7rem;padding:6px 2px;line-height:1.1}
 .reg-nbmus{display:inline-flex;align-items:center;gap:3px;margin-left:6px;text-decoration:none;vertical-align:middle}.reg-nbmus svg{width:14px;height:14px}
+/* La fenêtre de la Nuit s'ancre en haut : le titre et les onglets gardent la même hauteur quel que soit le contenu */
+#coll{align-items:flex-start}#coll .coll-boite{margin-top:max(40px,calc(env(safe-area-inset-top,0px) + 34px))}
 .coll-boite{max-width:460px}
 .nuit-ligne{display:flex;align-items:center;gap:8px}.nuit-barre{flex:1;height:8px;border-radius:4px;background:var(--nuit);overflow:hidden}#nuit-jauge{height:100%;background:linear-gradient(90deg,#c79bff,#ffd36b);border-radius:4px;transition:width .4s}
 #b-nuit{padding:5px 10px;font-size:.78rem}
@@ -198,9 +200,9 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .liste{display:flex;flex-direction:column;gap:8px}
 .amelio{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--panneau);border:1px solid var(--trait);border-radius:11px;padding:4px 6px 4px 11px}
 .amelio div{min-width:0}
-.amelio h3{margin:0;font-size:.9rem;font-weight:600;line-height:1.2}
+.amelio h3{margin:0;font-size:.9rem;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.amelio p .niv{color:var(--encre);font-weight:600}.amelio p .niv::after{content:' · ';color:var(--brume);font-weight:500}
 .amelio p{margin:0;font-size:.76rem;line-height:1.25;color:var(--brume);font-variant-numeric:tabular-nums}
-.amelio .lots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.amelio .lots.seul{grid-template-columns:1fr}.amelio .lots.seul .btn{width:104px;padding:5px 6px}.amelio .btn{min-width:0;width:50px;padding:3px 2px;font-size:.78rem;border-radius:8px;line-height:1.1}.amelio .btn small{font-size:.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}.amelio .btn:disabled small{opacity:.6}
+.amelio .lots{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}.amelio .lots.seul{grid-template-columns:1fr}.amelio .lots.seul .btn{width:112px;padding:5px 8px;font-size:.84rem}.amelio .btn{min-width:0;width:62px;padding:4px 2px;font-size:.82rem;border-radius:8px;line-height:1.1}.amelio .btn small{font-size:.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}.amelio .btn:disabled small{opacity:.6}
 .amelio .btn small{font-size:.72rem}
 #p-ent .liste,#p-ren .liste{gap:4px}
 /* Les améliorations se répartissent la hauteur disponible au lieu de laisser un vide en bas */
@@ -222,7 +224,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 #p-ent .amelio,#p-ren .amelio{padding:6px 8px 6px 14px}
 #p-ent .amelio h3,#p-ren .amelio h3{font-size:.95rem}
 #p-ent .amelio p,#p-ren .amelio p{font-size:.82rem}
-#p-ent .amelio .btn,#p-ren .amelio .btn{width:56px;padding:5px 2px;font-size:.84rem}}
+#p-ent .amelio .btn,#p-ren .amelio .btn{width:70px;padding:6px 2px;font-size:.88rem}#p-ren .amelio .lots.seul .btn{width:118px;padding:7px 8px;font-size:.9rem}}
 #p-ent,#p-ren{gap:7px}
 .amelio{min-height:0}
 #p-ren .bloc{padding:8px 12px;gap:5px}#p-ren{gap:8px}#p-ren .ren-tete h2{margin:0;font-size:1.05rem}#p-ren #b-ren{padding-top:7px;padding-bottom:7px}#p-arm{gap:9px}#p-ren .amelio{padding-top:2px;padding-bottom:2px}#p-ren .amelio .btn{padding-top:4px;padding-bottom:4px}
@@ -635,7 +637,7 @@ const EN={
  'Fin de la chasse':'End of the hunt','Mine fermée':'Mine closed','Cristaux extraits en une minute. Nouveau record !':'Crystals mined in one minute. New record!',
  // Bonus et Renaître
  'Payées en croquettes, remises à zéro à chaque renaissance.':'Paid with kibble, reset at every rebirth.',
- 'Griffes affûtées':'Sharp claws','Gâchette nerveuse':'Quick trigger','Croquettes dorées':'Golden kibble','Armurier':'Gunsmith','Coussins blindés':'Padded armor',
+ 'Griffes affûtées':'Sharp claws','Gâchette nerveuse':'Quick trigger','Croquettes dorées':'Golden kibble','Armurier du quartier':'Gunsmith','Coussins blindés':'Padded armor',
  'Ronron éternel':'Eternal purr','Pattes d\'or':'Golden paws','Départ lancé':'Head start','Sieste profonde':'Deep nap',
  'Comment marche la renaissance ?':'How does rebirth work?','Cette vie':'This life','Renaissances':'Rebirths','Toucher encore pour confirmer':'Tap again to confirm',
  // Fenêtres
@@ -1296,7 +1298,7 @@ const AMELIOS=[
  {k:'dmg',nom:'Griffes affûtées',desc:l=>'Dégâts x'+fmtD(1.12**l),cout:l=>25*1.55**l},
  {k:'rate',nom:'Gâchette nerveuse',desc:l=>'Cadence +'+(l*5)+' %',cout:l=>60*1.7**l,max:40},
  {k:'gold',nom:'Croquettes dorées',desc:l=>'Butin +'+(l*15)+' %',cout:l=>40*1.6**l},
- {k:'smith',nom:'Armurier',desc:l=>'Armes achetées au niveau '+(l+1),cout:l=>400*9**l,max:12},
+ {k:'smith',nom:'Armurier du quartier',desc:l=>'Armes achetées au niveau '+(l+1),cout:l=>400*9**l,max:12},
  {k:'pv',nom:'Coussins blindés',desc:l=>'Points de vie de l’escouade : '+pvMax(l),cout:l=>80*1.75**l,max:30}
 ];
 const RENS=[
@@ -2216,12 +2218,12 @@ function majDefis(){
 $('l-def').addEventListener('click',e=>{const b=e.target.closest('[data-defi]');if(b&&!b.disabled)lanceDefi(b.dataset.defi)});
 
 // ================= Interface : entraînement et renaissance =================
-// Achat par 1, par 10 ou au maximum possible : n niveaux et leur coût total, bornés par le plafond et le solde
+// Achat par 1 ou par 5 : n niveaux et leur coût total, bornés par le plafond et le solde
 function lotAchat(d,l,solde,n){let k=0,c=0;while(k<n&&!(d.max&&l+k>=d.max)){const x=d.cout(l+k);if(c+x>solde)break;c+=x;k++}return{k,c}}
 function listeAmelios(el,defs,obj,monnaie){
-  // En pelotes, les niveaux se paient un par un : un seul bouton
-  const lots=monnaie==='or'?'<button class="btn" data-n="1"></button><button class="btn" data-n="10"></button><button class="btn" data-n="max"></button>':'<button class="btn" data-n="1"></button>';
-  el.innerHTML=defs.map(d=>'<div class="amelio"><div><h3>'+d.nom+' <span style="color:var(--brume);font-weight:500">niv. '+obj[d.k]+'</span></h3><p>'+d.desc(obj[d.k])+'</p></div><div class="lots'+(monnaie==='pel'?' seul':'')+'" id="'+monnaie+'-'+d.k+'">'+lots+'</div></div>').join('');
+  // Deux boutons en croquettes (+1, +5), un seul en pelotes
+  const lots=monnaie==='or'?'<button class="btn" data-n="1"></button><button class="btn" data-n="5"></button>':'<button class="btn" data-n="1"></button>';
+  el.innerHTML=defs.map(d=>'<div class="amelio"><div><h3>'+d.nom+'</h3><p><span class="niv">niv. '+obj[d.k]+'</span><span>'+d.desc(obj[d.k])+'</span></p></div><div class="lots'+(monnaie==='pel'?' seul':'')+'" id="'+monnaie+'-'+d.k+'">'+lots+'</div></div>').join('');
   el.onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;const d=defs.find(x=>monnaie+'-'+x.k===b.parentElement.id);if(!d)return;
     const l=obj[d.k],solde=monnaie==='or'?S.or:S.pel,{k,c}=lotAchat(d,l,solde,b.dataset.n==='max'?9999:+b.dataset.n);if(!k)return;
     if(monnaie==='or')S.or-=c;else S.pel-=c;obj[d.k]+=k;Son.achat();calcEquipe();majGrille();majListes();majHud()};
@@ -2230,10 +2232,10 @@ function majListes(){listeAmelios($('l-ent'),AMELIOS,S.up,'or');listeAmelios($('
 function majBoutons(){
   for(const[defs,obj,m,solde]of[[AMELIOS,S.up,'or',S.or],[RENS,S.rb,'pel',S.pel]]){
     for(const d of defs){const z=$(m+'-'+d.k);if(!z)continue;const l=obj[d.k],fini=d.max&&l>=d.max;
-      z.querySelectorAll('[data-n]').forEach(b=>{const n=b.dataset.n==='max'?9999:+b.dataset.n;
+      z.querySelectorAll('[data-n]').forEach(b=>{const n=+b.dataset.n;
         if(fini){b.disabled=true;b.innerHTML=b.dataset.n==='1'?'Max':'';b.hidden=b.dataset.n!=='1';return}b.hidden=false;
-        const{k,c}=lotAchat(d,l,n===9999?solde:Infinity,n);const peut=k>0&&c<=solde;b.disabled=!peut;b.classList.toggle('second',!peut);
-        const h=b.dataset.n==='1'?(m==='pel'?'Améliorer':'+1'):b.dataset.n==='10'?'+10':'Max'+(k?' +'+k:'');
+        const{k,c}=lotAchat(d,l,Infinity,n);const peut=k>0&&c<=solde;b.disabled=!peut;b.classList.toggle('second',!peut);
+        const h=b.dataset.n==='1'?(m==='pel'?'Améliorer':'+1'):'+'+k;
         b.innerHTML=h+'<small>'+(k?fmt(c):'')+'</small>'})}
   }
 }
