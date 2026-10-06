@@ -391,6 +391,8 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .eff-bulle{position:absolute;z-index:4;max-width:200px;background:rgba(27,20,36,.95);border:1px solid var(--trait);border-radius:10px;padding:6px 9px;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3;pointer-events:none}
 .eff-bulle b{font-size:13px}.eff-bulle .reste{opacity:.7;font-size:11px}
 #p-pet .pet-case{aspect-ratio:6/4.3}#p-pet .pet-case canvas{width:62%;height:78%}#p-pet .pets-stock{gap:5px}#p-pet .pets-eq .carte .etat{display:none}#p-pet .pets-eq .carte.actif{border-width:2px}#p-pet .pets-eq canvas{width:48px;height:48px}
+.stadebar{position:relative}.puce-bulle{position:absolute;left:0;right:0;top:100%;margin-top:-6px;z-index:6;background:rgba(27,20,36,.97);border:1px solid var(--trait);border-radius:12px;padding:8px 11px;display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:1.35;pointer-events:none}.puce-bulle>b{font-size:13px}
+#v-meteo{cursor:pointer}.puce .pi{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;border:1px solid currentColor;font-size:9px;font-style:italic;margin-right:4px;vertical-align:1px}
 </style>
 
 <div class="app">
@@ -426,7 +428,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 
   <div class="stadebar">
     <div class="stadeligne"><span><b id="v-stade">Stade 1</b> · <span id="v-biome">Forêt hantée</span></span><span id="v-prog">0 / 20</span></div>
-    <div class="puceligne"><span class="puce" id="v-meteo">Ciel clair</span><span><button class="mini-btn icone" id="b-pause" aria-pressed="false" title="Se replier">Repli</button><button class="mini-btn" id="b-vit" aria-pressed="false" title="Vitesse du jeu" aria-label="Vitesse x1">x1</button><button class="mini-btn icone" id="b-abandon" title="Abandonner le défi" aria-label="Abandonner le défi" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M7 4.5h10l-2.2 3.5L17 11.5H7z" fill="currentColor"/></svg></button></span></div>
+    <div class="puce-bulle" id="puce-bulle" role="status" hidden></div><div class="puceligne"><span class="puce" id="v-meteo">Ciel clair</span><span><button class="mini-btn icone" id="b-pause" aria-pressed="false" title="Se replier">Repli</button><button class="mini-btn" id="b-vit" aria-pressed="false" title="Vitesse du jeu" aria-label="Vitesse x1">x1</button><button class="mini-btn icone" id="b-abandon" title="Abandonner le défi" aria-label="Abandonner le défi" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M7 4.5h10l-2.2 3.5L17 11.5H7z" fill="currentColor"/></svg></button></span></div>
     <div class="jauge" id="jauge"><div id="jauge-r"></div></div>
     <div class="ligne-info"><span id="v-dps">Puissance : 0 / s</span><b id="v-record">Record : stade 1</b><span id="v-info" hidden></span></div>
   </div>
@@ -625,7 +627,7 @@ const EN={
  'Boss menaçant':'Looming boss','Vie du prochain boss':'Next boss health','Prime des boss':'Boss bounty','Éclats des boss':'Boss shards','Bonne fortune':'Good fortune','Croquettes gagnées':'Kibble earned',
  'Ciel qui gronde':'Rumbling sky','Vagues spéciales bien plus probables':'Special waves far more likely','galvanisé':'fired up','blessé':'wounded','Dégâts de ce chat':'This cat’s damage','à l’arrière':'at the back','Ce chat ne tire pas':'This cat does not shoot',
  'Type d’arme':'Weapon type','La silhouette en haut à droite d’une tuile : pistolet, fusil, fusil à pompe, mitraillette ou arme de précision. Le bonus d’un chat pour un type vaut pour toutes les armes de ce type, et seulement pour elles.':'The silhouette at the top right of a tile: pistol, rifle, shotgun, submachine gun or precision weapon. A cat’s bonus for a type applies to every weapon of that type, and only to them.',
- 'équipée':'equipped','fissurée':'cracked','Canon à plasma':'Plasma cannon','Rayon cosmique':'Cosmic ray','Pulsar':'Pulsar',
+ 'équipée':'equipped','fissurée':'cracked','Règles du Cauchemar':'Nightmare rules','en cours':'current','Canon à plasma':'Plasma cannon','Rayon cosmique':'Cosmic ray','Pulsar':'Pulsar',
  'Comète de poche':'Pocket comet','Fusil à nébuleuse':'Nebula rifle','Tromblon gravitationnel':'Gravity blunderbuss','Essaim de météores':'Meteor swarm',
  'Lance-quasar':'Quasar launcher','Trou noir portatif':'Portable black hole','Arc d’aurore':'Aurora bow','Pistolet temporel':'Time pistol',
  'Canon à supernova':'Supernova cannon','Tempête solaire':'Solar storm','Fusil antimatière':'Antimatter rifle','Faucheuse d’étoiles':'Star reaper',
@@ -2018,6 +2020,10 @@ const repliPossible=()=>enPause||(!VS&&!S.perte&&S.stade<S.best);
 function majPause(){const b=$('b-pause');if(!b)return;b.disabled=!repliPossible();b.innerHTML=enPause?ICO_REPRISE:ICO_REPLI;const l=enPause?'Reprendre le combat (le stade recommence)':'Se replier pour souffler (le stade recommencera)';b.title=l;b.setAttribute('aria-label',l);b.setAttribute('aria-pressed',enPause);b.hidden=!!D}
 $('b-pause').onclick=basculePause;
 cv.addEventListener('click',()=>{if(enPause)basculePause()});
+$('v-meteo').addEventListener('click',()=>{
+  if(D)return;const l=reglesC(S.stade);if(!l.length)return;const bu=$('puce-bulle');
+  bu.innerHTML='<b>'+T('Règles du Cauchemar')+'</b>'+l.slice().reverse().map((r,i)=>'<span><b>'+T(r.nom)+(i===0?' ('+T('en cours')+')':'')+'</b> : '+T(r.info)+'</span>').join('');
+  bu.hidden=false;clearTimeout(effBulleT);effBulleT=setTimeout(()=>{bu.hidden=true},Math.max(3000,1600*l.length));Son.clic()});
 $('effets').addEventListener('click',e=>{const b=e.target.closest('.eff');if(b){e.stopPropagation();bulleEffet(+b.dataset.i,b)}});
 
 let avant=0;
@@ -2343,7 +2349,7 @@ function majHud(){majEffets();
   }else{
     info.hidden=!S.perte;if(S.perte){const t='↺ '+S.perte.pel+' pelote'+(S.perte.pel>1?'s':'')+' au stade '+S.perte.stade;if(info.textContent!==t)info.textContent=t}
     $('v-stade').textContent='Stade '+S.stade;$('v-biome').textContent=biome(S.stade).nom+(boucleC(S.stade)?' · Cauchemar '+boucleC(S.stade):'');
-    const m=meteoDe(S.stade),me=METEOS[m],pu=$('v-meteo'),bo=bossActif&&enn.find(e=>e.boss);pu.classList.toggle('boss',!!bo);const ph=bo?biome(S.stade).boss+(bo.trait!=='rien'?' '+ICO_TRAIT[bo.trait]:'')+' · '+me.nom:(regleC(S.stade)?(nbRegles()>1?nbRegles()+' règles · ':'')+regleC(S.stade).nom+' · '+me.nom:me.nom+(me.effet?' · '+me.effet:''));if(pu.dataset.h!==ph){pu.dataset.h=ph;pu.innerHTML=ph;pu.setAttribute('aria-label',bo&&bo.trait!=='rien'?biome(S.stade).boss+' '+TRAITS_BOSS[bo.trait].nom:'')}
+    const m=meteoDe(S.stade),me=METEOS[m],pu=$('v-meteo'),bo=bossActif&&enn.find(e=>e.boss);pu.classList.toggle('boss',!!bo);const ph=bo?biome(S.stade).boss+(bo.trait!=='rien'?' '+ICO_TRAIT[bo.trait]:'')+' · '+me.nom:(regleC(S.stade)?'<span class="pi" aria-hidden="true">i</span>'+(nbRegles()>1?nbRegles()+' règles · ':'')+regleC(S.stade).nom+' · '+me.nom:me.nom+(me.effet?' · '+me.effet:''));if(pu.dataset.h!==ph){pu.dataset.h=ph;pu.innerHTML=ph;pu.setAttribute('aria-label',bo&&bo.trait!=='rien'?biome(S.stade).boss+' '+TRAITS_BOSS[bo.trait].nom:'')}
     if(bossActif){const b=enn.find(e=>e.boss);r.style.width=(b?100*b.pv/b.max:0)+'%';$('v-prog').textContent='Boss · '+Math.ceil(bossT)+' s'}
     else if(VS){$('v-prog').textContent=T(VS.nom)}
     else{const ks=killsStade();r.style.width=(100*Math.min(S.kills,ks)/ks)+'%';$('v-prog').textContent=Math.min(S.kills,ks)+' / '+ks}
