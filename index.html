@@ -61,6 +61,9 @@ h1 span{color:var(--bonbon)}
 .ai-i .ic-eclat{width:26px;height:26px}
 .res img{width:20px;height:20px;object-fit:contain;flex:none}
 .gemme{width:16px;height:18px;flex:none;background:linear-gradient(160deg,#e6f6ff,var(--lune) 45%,#5a8fd6);clip-path:polygon(50% 0,100% 30%,82% 100%,18% 100%,0 30%);margin-inline:2px}
+.menu{position:absolute;top:calc(100% + 8px);left:0;z-index:45;background:var(--panneau);border:1px solid var(--trait);border-radius:14px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:170px;box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.menu button{display:flex;align-items:center;gap:10px;padding:9px 12px;border:0;border-radius:10px;background:transparent;color:var(--encre);font:600 .88rem var(--f-texte);cursor:pointer;text-align:left}
+.menu button:hover,.menu button:focus-visible{background:var(--panneau2)}.menu button svg{width:20px;height:20px;flex:none}.menu button small{margin-left:auto;font-size:.72rem;color:var(--brume);font-weight:600}
 .btn-son{position:relative;width:34px;height:34px;border-radius:50%;background:var(--panneau);border:1px solid var(--trait);color:var(--encre);display:grid;place-items:center;cursor:pointer;padding:0}
 .btn-son svg{width:18px;height:18px}
 .btn-son[aria-expanded="true"]{background:var(--panneau2);border-color:var(--menthe)}
@@ -197,7 +200,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .amelio div{min-width:0}
 .amelio h3{margin:0;font-size:.9rem;font-weight:600;line-height:1.2}
 .amelio p{margin:0;font-size:.76rem;line-height:1.25;color:var(--brume);font-variant-numeric:tabular-nums}
-.amelio .lots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.amelio .btn{min-width:0;width:50px;padding:3px 2px;font-size:.78rem;border-radius:8px;line-height:1.1}.amelio .btn small{font-size:.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}.amelio .btn:disabled small{opacity:.6}
+.amelio .lots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.amelio .lots.seul{grid-template-columns:1fr}.amelio .lots.seul .btn{width:104px;padding:5px 6px}.amelio .btn{min-width:0;width:50px;padding:3px 2px;font-size:.78rem;border-radius:8px;line-height:1.1}.amelio .btn small{font-size:.6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}.amelio .btn:disabled small{opacity:.6}
 .amelio .btn small{font-size:.72rem}
 #p-ent .liste,#p-ren .liste{gap:4px}
 /* Les améliorations se répartissent la hauteur disponible au lieu de laisser un vide en bas */
@@ -383,9 +386,13 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
   <div class="entete">
     <div class="titre"><img class="logo" id="logo" alt="Escouade Ronron"></div>
     <div class="ressources">
-      <button class="btn-son" id="b-coll" aria-haspopup="dialog" title="Collection" aria-label="Collection"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h6.5a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6.5a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2H20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M16.2 8.2l.7 1.4 1.5.2-1.1 1 .3 1.5-1.4-.7-1.4.7.3-1.5-1.1-1 1.5-.2z" fill="currentColor"/></svg></button>
-      <button class="btn-son" id="b-info" aria-haspopup="dialog" title="Aide : boutons et symboles" aria-label="Aide : boutons et symboles"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="1.8" fill="currentColor"/><path d="M10.2 10.5H12v7.8M9.6 18.3h4.8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button class="btn-son" id="b-son" aria-haspopup="dialog" aria-expanded="false" title="Réglages du son" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="btn-son" id="b-menu" aria-haspopup="menu" aria-expanded="false" title="Réglages" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.5-2-3.5-2.4 1a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5a7.6 7.6 0 0 0-2.6 1.5l-2.4-1-2 3.5 2 1.5a7.6 7.6 0 0 0 0 3l-2 1.5 2 3.5 2.4-1a7.6 7.6 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 2.6-1.5l2.4 1 2-3.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+      <div class="menu" id="menu" role="menu" hidden>
+        <button role="menuitem" id="m-coll"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h6.5a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6.5a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2H20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M16.2 8.2l.7 1.4 1.5.2-1.1 1 .3 1.5-1.4-.7-1.4.7.3-1.5-1.1-1 1.5-.2z" fill="currentColor"/></svg>Objectif<small id="m-nuit"></small></button>
+        <button role="menuitem" id="m-aide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6" r="1.8" fill="currentColor"/><path d="M10.2 10.5H12v7.8M9.6 18.3h4.8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Guide</button>
+        <button role="menuitem" id="m-son"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Son</button>
+      </div>
+      <button class="btn-son" id="b-coll" hidden></button><button class="btn-son" id="b-info" hidden></button><button class="btn-son" id="b-son" hidden></button>
       <div class="res" title="Croquettes"><img id="ic-croq" alt=""><span id="v-or">0</span></div>
       <div class="res" title="Éclats de lune"><i class="gemme"></i><span id="v-ecl">0</span></div>
       <div class="res" title="Pelotes de renaissance"><img id="ic-pel" alt=""><span id="v-pel">0</span></div>
@@ -399,7 +406,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 5 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 6 oct. 2026</p></div>
     </div>
   </div>
 
@@ -426,7 +433,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
       <label class="bascule" for="a-fus"><input type="checkbox" id="a-fus"> Fusion automatique</label>
       <label class="bascule" for="a-ach"><input type="checkbox" id="a-ach"> Achat automatique</label>
     </div>
-    <p class="astuce" id="astuce-armes">Glisse une arme sur une autre du même niveau (ou touche-les l'une après l'autre) pour les fusionner. Le « i » en haut explique les symboles.</p>
+    <p class="astuce" id="astuce-armes">Glisse une arme sur une autre du même niveau (ou touche-les l'une après l'autre) pour les fusionner. Le guide (réglages en haut) explique les symboles.</p>
   </section>
 
   <section class="panneau" id="p-esc" hidden>
@@ -543,7 +550,7 @@ const EN={
  'Armes':'Weapons','Équipe':'Squad','Familiers':'Familiars','Défis':'Challenges','Bonus':'Upgrades','Renaître':'Rebirth',
  'Écran':'Screen','Ennemis':'Enemies','Onglets':'Tabs','Succès':'Achievements','Introduction':'Introduction',
  'Acheter une arme':'Buy a weapon','Fusionner':'Merge','une fois':'once','Fusion automatique':'Auto merge','Achat automatique':'Auto buy',
- 'Glisse une arme sur une autre du même niveau (ou touche-les l\'une après l\'autre) pour les fusionner. Le « i » en haut explique les symboles.':'Drag a weapon onto another of the same level (or tap one then the other) to merge them. The “i” at the top explains every symbol.',
+ 'Glisse une arme sur une autre du même niveau (ou touche-les l\'une après l\'autre) pour les fusionner. Le guide (réglages en haut) explique les symboles.':'Drag a weapon onto another of the same level (or tap one then the other) to merge them. The guide, in the settings at the top, explains every symbol.',
  'Repli':'Retreat','Se replier':'Retreat','Vitesse':'Speed','Vitesse du jeu':'Game speed','Record':'Record',
  'Reprendre le combat (le stade recommence)':'Resume the fight (the stage restarts)','Se replier pour souffler (le stade recommencera)':'Retreat to catch your breath (the stage will restart)',
  'Terrain de tir : les chats tirent automatiquement sur les créatures':'Battlefield: the cats shoot the creatures automatically',
@@ -641,7 +648,7 @@ const EN={
  'Chaque nuit, quelque chose remonte du brouillard. Des créatures affamées rôdent entre les arbres et viennent voler les croquettes des chats du quartier. Les humains se sont barricadés : il ne reste que les chats. Mandarine a pris son pistolet : l’Escouade Ronron tiendra la ligne.':'Every night, something rises from the fog. Starving creatures prowl between the trees and come to steal the neighborhood cats’ kibble. The humans have barricaded themselves in: only the cats are left. Tangerine has grabbed her pistol: the Purr Squad will hold the line.',
  'Les chats tirent tout seuls. Toi, tu les équipes : achète des armes avec les croquettes gagnées, puis glisse deux armes identiques l’une sur l’autre pour en forger une plus puissante.':'The cats shoot on their own. Your job is to arm them: buy weapons with the kibble you earn, then drag two identical weapons onto each other to forge a stronger one.',
  'Après 20 créatures, le maître des lieux sort de l’ombre. Abats-le avant la fin du chrono pour t’enfoncer plus loin dans la nuit. S’il s’échappe, renforce ton escouade et reviens l’affronter.':'After 20 creatures, the master of the place steps out of the shadows. Take it down before the timer runs out to push deeper into the night. If it escapes, strengthen your squad and face it again.',
- 'Recrute d’autres chats, améliore l’escouade, adopte des familiers et relève les défis du jour. Quand tu bloques, renais : tu repars de zéro, plus fort grâce aux pelotes. Le « i » en haut explique chaque symbole. Bonne chasse !':'Recruit more cats, upgrade the squad, adopt familiars and take on the daily challenges. When you get stuck, be reborn: you start over, stronger thanks to yarn. The “i” at the top explains every symbol. Happy hunting!',
+ 'Recrute d’autres chats, améliore l’escouade, adopte des familiers et relève les défis du jour. Quand tu bloques, renais : tu repars de zéro, plus fort grâce aux pelotes. Le guide, dans les réglages en haut, explique chaque symbole. Bonne chasse !':'Recruit more cats, upgrade the squad, adopt familiars and take on the daily challenges. When you get stuck, be reborn: you start over, stronger thanks to yarn. The guide, in the settings at the top, explains every symbol. Happy hunting!',
  // Annonces
  'Succès débloqué':'Achievement unlocked','Nouvelle créature':'New creature','Nouvelle recrue':'New recruit','Nouveau familier':'New familiar','Arme revendue':'Weapon sold','Le boss a filé':'The boss got away',
  'Ton escouade a dû se replier':'Your squad had to retreat','Le stade recommence.':'The stage restarts.','Retour au combat':'Back to the fight','Retour au combat, depuis le début du stade.':'Back to the fight, from the start of the stage.','Le stade reprend du début.':'The stage starts over.',
@@ -1369,7 +1376,8 @@ const meteoCle=()=>D?'clair':typeof VS!=='undefined'&&VS?VS.meteo:meteoDe(S.stad
 const pvEnn=()=>pvA(S.stade)*(1+S.kills*.01)*meteo().pv*(regleAct('nuit')?1.25:1)*(D?1:1+modv('pvEnn'))*nuitMult();
 const orEnn=()=>C.OR0*C.ORG**(S.stade-1)*multOr()*meteo().or*(1+modv('or'))*(regleAct('disette')?.7:1);
 // Pelotes : seule la progression faite dans cette vie compte (les stades sautés grâce à « Départ lancé » ne rapportent rien)
-const valPel=r=>r<C.REN_MIN?0:Math.floor(((r-C.REN_MIN)/2+1)**1.5);
+// Les vies longues paient davantage : au-delà du stade 20, prime croissante jusqu'à +60 % au stade 60
+const valPel=r=>r<C.REN_MIN?0:Math.floor(((r-C.REN_MIN)/2+1)**1.5*(1+.6*Math.min(1,Math.max(0,(r-20)/40))));
 const gainPel=()=>Math.round(Math.max(0,valPel(S.rec)-valPel(S.depart||1))*(1+.1*(boucleC(S.rec)>0?Math.min(boucleC(S.rec),REGLES_C.length):0)));
 // Stade à dépasser pour gagner au moins une pelote
 function stadeUtile(){let r=Math.max(C.REN_MIN,S.rec);while(valPel(r)-valPel(S.depart||1)<1&&r<9999)r++;return r}
@@ -2196,7 +2204,9 @@ $('l-def').addEventListener('click',e=>{const b=e.target.closest('[data-defi]');
 // Achat par 1, par 10 ou au maximum possible : n niveaux et leur coût total, bornés par le plafond et le solde
 function lotAchat(d,l,solde,n){let k=0,c=0;while(k<n&&!(d.max&&l+k>=d.max)){const x=d.cout(l+k);if(c+x>solde)break;c+=x;k++}return{k,c}}
 function listeAmelios(el,defs,obj,monnaie){
-  el.innerHTML=defs.map(d=>'<div class="amelio"><div><h3>'+d.nom+' <span style="color:var(--brume);font-weight:500">niv. '+obj[d.k]+'</span></h3><p>'+d.desc(obj[d.k])+'</p></div><div class="lots" id="'+monnaie+'-'+d.k+'"><button class="btn" data-n="1"></button><button class="btn second" data-n="10"></button><button class="btn second" data-n="max"></button></div></div>').join('');
+  // En pelotes, les niveaux se paient un par un : un seul bouton
+  const lots=monnaie==='or'?'<button class="btn" data-n="1"></button><button class="btn" data-n="10"></button><button class="btn" data-n="max"></button>':'<button class="btn" data-n="1"></button>';
+  el.innerHTML=defs.map(d=>'<div class="amelio"><div><h3>'+d.nom+' <span style="color:var(--brume);font-weight:500">niv. '+obj[d.k]+'</span></h3><p>'+d.desc(obj[d.k])+'</p></div><div class="lots'+(monnaie==='pel'?' seul':'')+'" id="'+monnaie+'-'+d.k+'">'+lots+'</div></div>').join('');
   el.onclick=e=>{const b=e.target.closest('[data-n]');if(!b)return;const d=defs.find(x=>monnaie+'-'+x.k===b.parentElement.id);if(!d)return;
     const l=obj[d.k],solde=monnaie==='or'?S.or:S.pel,{k,c}=lotAchat(d,l,solde,b.dataset.n==='max'?9999:+b.dataset.n);if(!k)return;
     if(monnaie==='or')S.or-=c;else S.pel-=c;obj[d.k]+=k;Son.achat();calcEquipe();majGrille();majListes();majHud()};
@@ -2207,8 +2217,8 @@ function majBoutons(){
     for(const d of defs){const z=$(m+'-'+d.k);if(!z)continue;const l=obj[d.k],fini=d.max&&l>=d.max;
       z.querySelectorAll('[data-n]').forEach(b=>{const n=b.dataset.n==='max'?9999:+b.dataset.n;
         if(fini){b.disabled=true;b.innerHTML=b.dataset.n==='1'?'Max':'';b.hidden=b.dataset.n!=='1';return}b.hidden=false;
-        const{k,c}=lotAchat(d,l,n===9999?solde:Infinity,n);const peut=k>0&&c<=solde;b.disabled=!peut;
-        const h=b.dataset.n==='1'?'+1':b.dataset.n==='10'?'+10':'Max'+(k?' +'+k:'');
+        const{k,c}=lotAchat(d,l,n===9999?solde:Infinity,n);const peut=k>0&&c<=solde;b.disabled=!peut;b.classList.toggle('second',!peut);
+        const h=b.dataset.n==='1'?(m==='pel'?'Améliorer':'+1'):b.dataset.n==='10'?'+10':'Max'+(k?' +'+k:'');
         b.innerHTML=h+'<small>'+(k?fmt(c):'')+'</small>'})}
   }
 }
@@ -2264,7 +2274,7 @@ const INTRO=[
   img:()=>({fond:ASSETS.fonds[1],imgs:[[ASSETS.armes[0].src,1],['+'],[ASSETS.armes[0].src,1],['→'],[ASSETS.armes[1].src]]})},
  {t:'Les boss',x:'Après 20 créatures, le maître des lieux sort de l’ombre. Abats-le avant la fin du chrono pour t’enfoncer plus loin dans la nuit. S’il s’échappe, renforce ton escouade et reviens l’affronter.',
   img:()=>({fond:ASSETS.fonds[3],imgs:[[ASSETS.chats[1].src],[ASSETS.boss[3].src]]})},
- {t:'Et ensuite',x:'Recrute d’autres chats, améliore l’escouade, adopte des familiers et relève les défis du jour. Quand tu bloques, renais : tu repars de zéro, plus fort grâce aux pelotes. Le « i » en haut explique chaque symbole. Bonne chasse !',
+ {t:'Et ensuite',x:'Recrute d’autres chats, améliore l’escouade, adopte des familiers et relève les défis du jour. Quand tu bloques, renais : tu repars de zéro, plus fort grâce aux pelotes. Le guide, dans les réglages en haut, explique chaque symbole. Bonne chasse !',
   img:()=>({fond:ASSETS.fonds[9],imgs:[[ASSETS.pets[0],1],[ASSETS.pelote,1],[ASSETS.eclat,1],[ASSETS.pets[2],1]]})}
 ];
 let introP=0;
@@ -2642,7 +2652,7 @@ document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase(),ong=['arm','esc','pet','def','ent','ren'];
   if(k>='1'&&k<='6'){const b=document.querySelector('.onglet[data-p="'+ong[+k-1]+'"]');if(b){b.click();e.preventDefault()}return}
   const clic=id=>{const b=$(id);if(b&&!b.disabled&&!b.hidden){b.click();e.preventDefault()}};
-  if(k==='a')clic('b-achat');else if(k==='f')clic('b-auto');else if(k==='r')clic('b-pause');else if(k==='v')clic('b-vit');else if(k==='i')clic('b-info');else if(k==='c')clic('b-coll');
+  if(k==='a')clic('b-achat');else if(k==='f')clic('b-auto');else if(k==='r')clic('b-pause');else if(k==='v')clic('b-vit');else if(k==='i'){ouvreAide();e.preventDefault()}else if(k==='c'){ouvreColl();e.preventDefault()}
 });
 
 // ================= Audio : tout est synthétisé (Web Audio), aucun fichier =================
@@ -2906,6 +2916,16 @@ function majReglages(){
   $('r-vib').checked=!!S.reg.vib;$('r-notif').checked=!!S.reg.notif;
 }
 $('b-son').onclick=()=>{Son.init();reg.hidden=!reg.hidden;majReglages()};
+// Un seul bouton de réglages : un menu vers l'objectif (la Nuit), le guide et le son
+const menu=$('menu');
+function majMenu(){const m=$('m-nuit');if(m)m.textContent=Math.round(nuitPct()*100)+' %'}
+function basculeMenu(ouvre){menu.hidden=!ouvre;$('b-menu').setAttribute('aria-expanded',ouvre);if(ouvre){majMenu();reg.hidden=true;majReglages()}}
+$('b-menu').onclick=()=>{Son.clic();basculeMenu(menu.hidden)};
+$('m-coll').onclick=()=>{basculeMenu(false);ouvreColl()};
+$('m-aide').onclick=()=>{basculeMenu(false);ouvreAide()};
+$('m-son').onclick=()=>{basculeMenu(false);Son.init();reg.hidden=false;majReglages()};
+document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!e.target.closest('#menu,#b-menu'))basculeMenu(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){basculeMenu(false);$('b-menu').focus()}});
 $('r-vib').onchange=e=>{S.reg.vib=e.target.checked;Son.clic();vibre('leger')};
 $('r-notif').onchange=e=>{S.reg.notif=e.target.checked;Son.clic();if(S.reg.notif)demandeNotif(true)};
 // ---- Sauvegarde : export / import d'un code ----
