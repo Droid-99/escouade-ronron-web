@@ -395,6 +395,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 #v-meteo{cursor:pointer}.puce .pi{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;border:1px solid currentColor;font-size:9px;font-style:italic;margin-right:4px;vertical-align:1px}
 body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:none!important}body.reve .onglets{grid-template-columns:repeat(3,1fr)}body.reve #v-biome::after{content:' · zzz';opacity:.7}
 .reve-carte{border-color:#c79bff!important;background:linear-gradient(135deg,rgba(199,155,255,.14),transparent)}
+#p-pet .bloc{padding:6px 12px}#p-pet .bloc h2{display:flex;align-items:center;gap:8px}#b-tri-pets{width:30px;height:28px;padding:0;display:grid;place-items:center}#b-tri-pets svg{width:17px;height:17px}#p-pet .pet-case{aspect-ratio:6/3.6}#p-pet .actions .btn{padding-top:7px;padding-bottom:7px}#p-pet .pets-eq canvas{width:42px;height:42px}#p-pet .pets-eq .carte{padding:4px 4px 5px}
 </style>
 
 <div class="app">
@@ -464,7 +465,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
 
   <section class="panneau" id="p-pet" hidden>
     <div class="bloc">
-      <h2>Familiers</h2>
+      <h2>Familiers<button class="mini-btn icone" id="b-tri-pets" title="Trier par espèce puis par grade" aria-label="Trier par espèce puis par grade"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v14M3.5 14.5L7 18l3.5-3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6h8M13 11h6M13 16h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></h2>
       <div class="chiffres" id="v-petbonus"></div>
     </div>
     <div class="pets-eq" id="pets-eq"></div>
@@ -631,7 +632,7 @@ const EN={
  'Ciel qui gronde':'Rumbling sky','Vagues spéciales bien plus probables':'Special waves far more likely','galvanisé':'fired up','blessé':'wounded','Dégâts de ce chat':'This cat’s damage','à l’arrière':'at the back','Ce chat ne tire pas':'This cat does not shoot',
  'Type d’arme':'Weapon type','La silhouette en haut à droite d’une tuile : pistolet, fusil, fusil à pompe, mitraillette ou arme de précision. Le bonus d’un chat pour un type vaut pour toutes les armes de ce type, et seulement pour elles.':'The silhouette at the top right of a tile: pistol, rifle, shotgun, submachine gun or precision weapon. A cat’s bonus for a type applies to every weapon of that type, and only to them.',
  'équipée':'equipped','fissurée':'cracked','Règles du Cauchemar':'Nightmare rules','en cours':'current','La Baignoire sans fond':'The Bottomless Bathtub','L’Aspirateur':'The Vacuum','Chez le vétérinaire':'At the Vet','La Gamelle vide':'The Empty Bowl','Le Champ de concombres':'The Cucumber Field','Moustache Trempée':'Soggy Whiskers','Chat-Tornade':'Tornado Cat','Docteur Ronron':'Doctor Purr','Gros Affamé':'Big Hungry','Le Sursauteur':'The Startler','Canard du rêve':'Dream Duck','Aspi docile':'Tame Vacuum','Cône de honte':'Cone of Shame','Concombre':'Cucumber','Le cauchemar d’un chat':'A Cat’s Nightmare','Une fois par jour, Mandarine fait un drôle de rêve : tu repars de zéro dans une autre dimension, où des monstres tirent sur des chats. La première chute te réveille. Plus tu vas loin, meilleur est le familier exclusif que tu rapportes. Ta partie principale t’attend, intacte.':'Once a day, Mandarine has a strange dream: you start from scratch in another dimension, where monsters shoot at cats. Your first fall wakes you up. The further you go, the better the exclusive familiar you bring back. Your main game waits for you, untouched.','S’endormir':'Fall asleep','Plus tard':'Later','Réveil':'Waking up','Mandarine se réveille en sursaut, les griffes plantées dans le coussin.':'Mandarine wakes with a start, claws stuck in the cushion.','Mandarine ouvre un œil. Ce n’était qu’un rêve. Probablement.':'Mandarine opens one eye. It was only a dream. Probably.','Dans le cauchemar, les monstres ont tenu jusqu’au stade':'In the nightmare, the monsters held out until stage','record du rêve':'dream record','Familiers pleins':'Familiars full','éclats':'shards','Familier exclusif':'Exclusive familiar','Super':'Great','Une partie par jour dans une autre dimension : tu joues les monstres, les chats sont la cible. Rapporte un familier exclusif.':'One run a day in another dimension: you play the monsters, the cats are the target. Bring back an exclusive familiar.','Record du rêve':'Dream record','stade':'stage','disponible':'available','reviens demain':'come back tomorrow','Dormir':'Sleep','Se réveiller ?':'Wake up?','La partie dans le rêve s’arrête ici. Ta récompense dépend du stade atteint.':'The dream run ends here. Your reward depends on the stage reached.','Se réveiller':'Wake up','Continuer':'Keep going',
- 'Canon à plasma':'Plasma cannon','Rayon cosmique':'Cosmic ray','Pulsar':'Pulsar',
+ 'Trier par espèce puis par grade':'Sort by species, then by grade','Canon à plasma':'Plasma cannon','Rayon cosmique':'Cosmic ray','Pulsar':'Pulsar',
  'Comète de poche':'Pocket comet','Fusil à nébuleuse':'Nebula rifle','Tromblon gravitationnel':'Gravity blunderbuss','Essaim de météores':'Meteor swarm',
  'Lance-quasar':'Quasar launcher','Trou noir portatif':'Portable black hole','Arc d’aurore':'Aurora bow','Pistolet temporel':'Time pistol',
  'Canon à supernova':'Supernova cannon','Tempête solaire':'Solar storm','Fusil antimatière':'Antimatter rifle','Faucheuse d’étoiles':'Star reaper',
@@ -1389,7 +1390,7 @@ let S;
 function jourAuj(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 function neuf(){return{reve:false,reveJour:'',reveBilan:null,reveRecord:0,or:0,pel:0,pelTot:0,ecl:0,stade:1,kills:0,rec:1,best:1,grille:[1].concat(Array(C.SLOTS-1).fill(0)),achats:0,
   up:{dmg:0,rate:0,gold:0,smith:0,pv:0},rb:{dmg:0,gold:0,start:0,sleep:0},taux:0,vu:Date.now(),nbRen:0,
-  coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(18).fill(null),petEq:[null,null,null],
+  coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(24).fill(null),petEq:[null,null,null],
   defis:{jour:'',tickets:{boss:3,chasse:3,mine:3,potager:3},niv:{boss:1,potager:1},rec:{chasse:0,mine:0}},
   auto:{fus:false,ach:false},vitesse:1,son:{fond:'lieu',sfx:.8,armes:.35,v:2},
   reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:300},maitrise:Array(20).fill(0),nuit:0,aube:false}}
@@ -1404,7 +1405,7 @@ function normalise(s){
   const n=fusionne(neuf(),s);n.son=migreSon(s&&s.son);
   n.best=Math.max(n.best||1,n.rec||1,n.stade||1);
   if(n.grille.length!==C.SLOTS)n.grille=n.grille.concat(Array(C.SLOTS).fill(0)).slice(0,C.SLOTS);
-  if(n.pets.length<18)n.pets=n.pets.concat(Array(18-n.pets.length).fill(null));
+  if(n.pets.length<24)n.pets=n.pets.concat(Array(24-n.pets.length).fill(null));
   n.esc=n.esc.filter(id=>n.coll.includes(id));
   // Parties d'avant la correction : la vie en cours a commencé au stade de « Départ lancé »
   if(!s||s.depart===undefined)n.depart=Math.min(n.rec,1+3*n.rb.start);
@@ -2286,6 +2287,8 @@ function majPets(){
   $('b-invoque').disabled=S.ecl<C.INVOC||!S.pets.includes(null);
 }
 let petLong=null;
+// Tri de la réserve : par espèce, puis du meilleur grade au plus faible ; les cases vides à la fin
+$('b-tri-pets').onclick=()=>{const l=S.pets.filter(Boolean).sort((a,b)=>a.e-b.e||b.g-a.g);S.pets=l.concat(Array(S.pets.length-l.length).fill(null));Son.clic();majPets()};
 $('pets-stock').addEventListener('pointerdown',e=>{const b=e.target.closest('[data-st]');if(!b)return;clearTimeout(petLong);petLong=setTimeout(()=>{petLong=null;relacher(+b.dataset.st)},550)});
 ['pointerup','pointercancel','pointerleave'].forEach(ev=>$('pets-stock').addEventListener(ev,()=>{clearTimeout(petLong)}));
 $('pets-stock').addEventListener('contextmenu',e=>e.preventDefault());
