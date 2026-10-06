@@ -140,7 +140,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .segment.fonds{grid-template-columns:repeat(3,1fr)}.segment.fonds button{font-size:.7rem;padding:6px 2px;line-height:1.1}
 .reg-nbmus{display:inline-flex;align-items:center;gap:3px;margin-left:6px;text-decoration:none;vertical-align:middle}.reg-nbmus svg{width:14px;height:14px}
 /* La fenêtre de la Nuit s'ancre en haut : le titre et les onglets gardent la même hauteur quel que soit le contenu */
-#coll{align-items:flex-start}#coll .coll-boite{margin-top:max(40px,calc(env(safe-area-inset-top,0px) + 34px))}
+#coll,#aide{align-items:flex-start}#aide .aide-boite{overflow:hidden;box-sizing:border-box}#aide .rub{overflow-y:auto;min-height:0;flex:0 1 auto}#aide .aide-boite{max-height:calc(100dvh - max(40px,calc(env(safe-area-inset-top,0px) + 34px)) - 44px)}#coll .coll-boite,#aide .aide-boite{margin-top:max(40px,calc(env(safe-area-inset-top,0px) + 34px))}
 .coll-boite{max-width:460px}
 .nuit-ligne{display:flex;align-items:center;gap:8px}.nuit-barre{flex:1;height:8px;border-radius:4px;background:var(--nuit);overflow:hidden}#nuit-jauge{height:100%;background:linear-gradient(90deg,#c79bff,#ffd36b);border-radius:4px;transition:width .4s}
 #b-nuit{padding:5px 10px;font-size:.78rem}
