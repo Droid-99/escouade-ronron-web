@@ -710,7 +710,7 @@ const EN={
  'Ta collection et la jauge du quartier reconquis : lieux maîtrisés (le boss battu 10 fois en jouant), bestiaire, chats, récits, succès et légendaires. À 100 %, l’aube se lève.':'Your collection and the gauge of the neighborhood reclaimed: mastered places (boss beaten 10 times while playing), bestiary, cats, stories, achievements and legendaries. At 100%, dawn breaks.',
  'Pas maintenant':'Not now','Tu gardes tout : chats, légendaires, récits, musiques, pelotes. Tu repars au stade 1 avec des créatures deux fois plus résistantes et une règle du Cauchemar active en permanence. La jauge de la Nuit repart de zéro pour les lieux à maîtriser.':'You keep everything: cats, legendaries, stories, music, yarn. You restart at stage 1 with creatures twice as tough and one Nightmare rule always active. The Night gauge resets for the places to master.',
  'Boîte à musique':'Music box','Gouttes d’égout':'Sewer Drops','Valse des épouvantails':'Scarecrow Waltz','Comptine de porcelaine':'Porcelain Rhyme','Chant des pioches':'Pickaxe Song','Jungle sous verre':'Jungle Under Glass',
- 'Tic-tac détraqué':'Broken Tick-Tock','Musette des toits':'Rooftop Musette','Dernier train':'Last Train','Poussière lunaire':'Moon Dust','Berceuse des brumes':'Lullaby of Mists','Au fil des lieux':'Follow the places',
+ 'Tic-tac détraqué':'Broken Tick-Tock','Musette des toits':'Rooftop Musette','Dernier train':'Last Train','Poussière lunaire':'Moon Dust','Berceuse des brumes':'Lullaby of Mists','Au fil des lieux':'Follow the places','Mirage':'Mirage','Éruption molle':'Soft Eruption','Manège rouillé':'Rusty Carousel',
  'Bestiaire complet':'Complete bestiary','Bats le boss de chacun des 20 lieux':'Beat the boss of each of the 20 places','Trouve une arme légendaire':'Find a legendary weapon',
  'Dépasse le stade 100 et entre dans le Cauchemar':'Pass stage 100 and enter the Nightmare',
  'Après le stade 100, les décors reviennent assombris. Chaque boucle de 100 stades ajoute une règle aux précédentes (ennemis enragés, boss cuirassés, horde, disette…), jusqu’à 8. En échange, les éclats des boss et les pelotes de la renaissance montent avec le nombre de règles.':'After stage 100, places come back darker. Each 100-stage loop adds a rule to the previous ones (enraged enemies, armored bosses, horde, famine…), up to 8. In return, boss shards and rebirth yarn grow with the number of rules.',
@@ -1327,7 +1327,7 @@ function neuf(){return{or:0,pel:0,pelTot:0,ecl:0,stade:1,kills:0,rec:1,best:1,gr
   up:{dmg:0,rate:0,gold:0,smith:0,pv:0},rb:{dmg:0,gold:0,start:0,sleep:0},taux:0,vu:Date.now(),nbRen:0,
   coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(12).fill(null),petEq:[null,null,null],
   defis:{jour:'',tickets:{boss:3,chasse:3,mine:3,potager:3},niv:{boss:1,potager:1},rec:{chasse:0,mine:0}},
-  auto:{fus:false,ach:false},vitesse:1,son:{fond:'musique',sfx:.8,armes:.35},
+  auto:{fus:false,ach:false},vitesse:1,son:{fond:'lieu',sfx:.8,armes:.35,v:2},
   reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:600},maitrise:Array(20).fill(0),nuit:0,aube:false}}
 function fusionne(def,o){
   if(o===undefined||o===null)return def;
@@ -1335,7 +1335,7 @@ function fusionne(def,o){
   if(typeof def==='object'){const r={};for(const k in def)r[k]=fusionne(def[k],o[k]);for(const k in o)if(!(k in r))r[k]=o[k];return r}
   return o;
 }
-function migreSon(o){const n={fond:'musique',sfx:.8,armes:.35};if(!o)return n;if('fond' in o)return Object.assign(n,o);n.fond=o.mus===false?'aucun':'musique';n.sfx=o.sfx===false?0:.8;return n}
+function migreSon(o){const n={fond:'lieu',sfx:.8,armes:.35,v:2};if(!o)return n;if('fond' in o){if(!o.v&&o.fond==='musique')o.fond='lieu';o.v=2;return Object.assign(n,o)}n.fond=o.mus===false?'aucun':'musique';n.sfx=o.sfx===false?0:.8;return n}
 function normalise(s){
   const n=fusionne(neuf(),s);n.son=migreSon(s&&s.son);
   n.best=Math.max(n.best||1,n.rec||1,n.stade||1);
@@ -2677,16 +2677,20 @@ document.addEventListener('keydown',e=>{
 const MUSIQUES=[
  {id:'musique',nom:'Boîte à musique',deb:1},{id:'berceuse',nom:'Berceuse',deb:6},{id:'foret',nom:'Forêt',deb:11},
  {id:'lofi',nom:'Lofi',deb:16},{id:'meteo',nom:'Météo',deb:21},{id:'cozy',nom:'Cozy',deb:26},{id:'orage',nom:'Orage',deb:31},
+ {id:'p2',nom:'Mirage',deb:6},{id:'p6',nom:'Éruption molle',deb:26},{id:'p8',nom:'Manège rouillé',deb:36},
  {id:'p11',nom:'Gouttes d’égout',deb:51},{id:'p12',nom:'Valse des épouvantails',deb:56},{id:'p13',nom:'Comptine de porcelaine',deb:61},
  {id:'p14',nom:'Chant des pioches',deb:66},{id:'p15',nom:'Jungle sous verre',deb:71},{id:'p16',nom:'Tic-tac détraqué',deb:76},
  {id:'p17',nom:'Musette des toits',deb:81},{id:'p18',nom:'Dernier train',deb:86},{id:'p19',nom:'Poussière lunaire',deb:91},
- {id:'p20',nom:'Berceuse des brumes',deb:96},{id:'lieu',nom:'Au fil des lieux',deb:52},{id:'aucun',nom:'Aucun',deb:1}
+ {id:'p20',nom:'Berceuse des brumes',deb:96},{id:'lieu',nom:'Au fil des lieux',deb:1},{id:'aucun',nom:'Aucun',deb:1}
 ];
 const musOk=id=>{const m=MUSIQUES.find(x=>x.id===id);return !!m&&S.best>=m.deb};
+// Un morceau par lieu : sept ambiances et trois pièces pour les lieux 1 à 10, une pièce dédiée pour les lieux 11 à 20
+const MUS_LIEU=['foret','p2','berceuse','orage','musique','p6','lofi','p8','meteo','cozy'];
 // Fond réellement joué : un fond pas encore débloqué retombe sur la boîte à musique ; « Au fil des lieux » suit le décor
+// (le morceau d'un lieu joue dès qu'on y est, même s'il n'est pas encore dans la collection)
 function fondJoue(){
   let f=S.son.fond;if(!musOk(f))f='musique';
-  if(f==='lieu'){const bi=D?(D.bi??0):biomeIdx(S.stade);const k='p'+(bi+1);f=bi>=10&&musOk(k)?k:'musique'}
+  if(f==='lieu'){const bi=(D?(D.bi??0):biomeIdx(S.stade))%20;f=bi<10?MUS_LIEU[bi]:'p'+(bi+1)}
   return f;
 }
 const Son=(()=>{
@@ -2783,6 +2787,9 @@ const Son=(()=>{
   // ---------- Morceaux des nouveaux lieux : un séquenceur commun, une partition par lieu ----------
   // acc : accords (une mesure chacun) · mel : rythme de la mélodie · b : rythme de la basse · k/s/h : grosse caisse, caisse claire, charleston
   const PIECES={
+   p2:{bpm:92,acc:[[50,54,57],[51,55,58],[50,54,57],[48,51,55]],mel:'x..x..x.x.x.....',b:'x.....x...x.....',k:'x..x....x..x....',s:'',h:'',gam:[62,63,66,67,69,70,72,74],t:'triangle',d:.35,v:.06,deco:'sable',seed:37},
+   p6:{bpm:126,acc:[[45,48,52],[41,45,48],[43,47,50],[40,44,47]],mel:'x.x...x.x.x...x.',b:'x.xx..x.x.xx..x.',k:'x...x...x...x...',s:'....x.......x...',h:'x.x.x.x.x.x.x.x.',gam:[69,71,72,74,76,77,79,81],t:'sawtooth',d:.16,v:.03,deco:'lave',seed:41},
+   p8:{bpm:138,pas:12,acc:[[48,52,55],[43,47,50],[45,48,52],[41,45,48]],mel:'x.xx.x..x.x.',b:'x...........',k:'',s:'',h:'',gam:[72,74,76,77,79,81,83,84],t:'square',d:.2,v:.03,trem:1,deco:'manege',seed:43},
    p11:{bpm:78,acc:[[50,53,57],[46,50,53],[48,52,55],[45,49,52]],mel:'x.....x...x.....',b:'x......x..x.....',k:'x.........x.....',s:'....x.......x...',h:'',gam:[62,64,65,67,69,70,72,74],t:'sine',d:.9,v:.07,deco:'goutte',seed:3},
    p12:{bpm:150,pas:12,acc:[[52,55,59],[48,52,55],[50,54,57],[47,50,54]],mel:'x..x.xx..x..',b:'x.....x.....',k:'x.....x.....',s:'',h:'..x..x..x..x',gam:[64,66,67,69,71,72,74,76],t:'square',d:.18,v:.035,seed:5},
    p13:{bpm:100,pas:12,acc:[[54,57,61],[50,54,57],[52,56,59],[49,53,56]],mel:'x.x.x.x...x.',b:'x...x...x...',k:'',s:'',h:'',gam:[78,80,81,83,85,86,88,90],t:'triangle',d:.7,v:.06,cloche:1,seed:8},
@@ -2816,6 +2823,9 @@ const Son=(()=>{
     if(P.deco==='goutte'&&Math.random()<.18)ton(1400+Math.random()*1600,.08,{type:'sine',f2:700,vol:.025,dest:musBus,t:t+Math.random()*dt});
     if(P.deco==='enclume'&&st===12&&mes%2===1)ton(2637,.35,{type:'triangle',vol:.04,dest:musBus,t}),ton(3520,.25,{type:'sine',vol:.02,dest:musBus,t});
     if(P.deco==='tictac'&&st%4===0)ton(st%8===0?2400:1800,.02,{type:'square',vol:.03,dest:musBus,t});
+    if(P.deco==='sable'&&st%2===1)bruit(.04,{ft:'highpass',fq:5000,vol:.018,dest:musBus,t});
+    if(P.deco==='lave'&&Math.random()<.06)ton(70+Math.random()*60,.3,{type:'sine',f2:38,vol:.07,dest:musBus,t:t+Math.random()*dt});
+    if(P.deco==='manege'){if(st===4||st===8)for(const m of ac)ton(mf(m+12),.12,{type:'square',vol:.011,dest:musBus,t});if(st===0&&mes===3&&boucle%2===1)ton(900,.7,{type:'sawtooth',f2:560,vol:.012,dest:musBus,t})}
     if(P.deco==='train'){if(st%2===0)bruit(.05,{ft:'lowpass',fq:600,vol:st%4===0?.06:.03,dest:musBus,t});if(st===0&&mes===3&&boucle%2===0)ton(mf(83),.9,{type:'sine',f2:mf(81),vol:.05,a:.1,dest:musBus,t})}
   }
 
@@ -2879,7 +2889,10 @@ const Son=(()=>{
     const pr=preset();
     if(pr){demarreAmb();regleAmb(pr[0],pr[1]);evenements(pr[1])}else arreteAmb();
     const f=fondJoue(),P=PIECES[f];
-    if(f!==fondPrec){fondPrec=f;pas=0}
+    if(f!==fondPrec){
+      // Fondu à chaque changement de morceau (changement de lieu, choix dans les réglages)
+      if(fondPrec){const t=ac.currentTime;for(const g of[musBus.gain,ambBus.gain]){g.cancelScheduledValues(t);g.setValueAtTime(0,t);g.linearRampToValueAtTime(1,t+2.5)}}
+      fondPrec=f;pas=0}
     if(f!=='musique'&&f!=='berceuse'&&f!=='lofi'&&!P){suivant=ac.currentTime+.05;return}
     const boss=bossActif||(D&&D.id==='boss');
     const dt=P?60/(P.bpm*(boss?1.12:1))/((P.pas||16)/4):f==='berceuse'?60/84/2:f==='lofi'?60/74/4:60/(boss?112:96)/4;
