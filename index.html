@@ -715,7 +715,7 @@ const EN={
  'Dégâts par seconde de cette arme':'Damage per second of this weapon',
  'Veilleur':'Night watcher','Vis 25 scènes avec tes chats':'Live 25 scenes with your cats','Mémoire de l’escouade':'Squad memory','Termine les 5 histoires des chats':'Finish the 5 cats’ tales',
  'Portée par le chef':'Carried by the leader','Choisie':'Selected',
- 'Boss pressés':'Rushed bosses','10 s de moins pour battre chaque boss':'10 s less to beat each boss','Morsures profondes':'Deep bites','les créatures mordent deux fois plus fort':'creatures bite twice as hard','Disette':'Famine','les créatures laissent 30 % de croquettes en moins':'creatures leave 30% less kibble','Garde dorée':'Golden guard','une créature sur dix est dorée (et enragée)':'one creature in ten is golden (and enraged)',
+ 'Boss pressés':'Rushed bosses','10 s de moins pour battre chaque boss':'10 s less to beat each boss','Morsures profondes':'Deep bites','les créatures mordent deux fois plus fort':'creatures bite twice as hard','Disette':'Famine','les créatures laissent 30 % de croquettes en moins':'creatures leave 30% less kibble','Garde dorée':'Golden guard','une créature sur sept est dorée (et enragée)':'one creature in seven is golden (and enraged)',
  'La Nuit':'The Night','Nouvelle Nuit':'New Night','L’aube':'The dawn','Reconquiers tout le quartier (la Nuit à 100 %)':'Reclaim the whole neighborhood (the Night at 100%)',
  'Lieux maîtrisés':'Mastered places','Histoires et récits':'Tales and stories','Succès et légendaires':'Achievements and legendaries',
  'Lieu maîtrisé':'Place mastered','Maîtrise':'Mastery','boss battus en jouant':'bosses beaten while playing','à la clé':'reward',
@@ -1049,7 +1049,7 @@ const ARC_PERK={mandarine:{t:'equipe',v:.05,nom:'Cheffe de meute'},grisou:{t:'or
 const FAM_RECIT={rep:'Répliques',trou:'Trouvailles',dil:'Dilemmes',pres:'Présages',arc:'Histoires',cau:'Voix du Cauchemar'};
 
 // ================= Réglages d'équilibrage =================
-const C={MAITRISE:10,LEG_DUREE:40,LEG_RECH:600,VS_PV:.6,LEG:.05,KILLS:20,BOSS_T:30,BOSS_M:10,HP0:10,HPG:1.47,OR0:2,ORG:1.37,DPS0:4,DPSG:2.05,ACH0:10,ACHG:1.12,SLOTS:12,REN_MIN:8,OFF_EFF:0.5,
+const C={MAITRISE:10,LEG_DUREE:40,LEG_RECH:600,VS_PV:.6,LEG:.12,KILLS:20,BOSS_T:30,BOSS_M:10,HP0:10,HPG:1.47,OR0:2,ORG:1.37,DPS0:4,DPSG:2.05,ACH0:10,ACHG:1.12,SLOTS:12,REN_MIN:8,OFF_EFF:0.5,
   CRIT0:.05,CRITM:2,TICKETS:3,DEFI_T:60,INVOC:60,ECL_BOSS:2,ESPRIT:.25,RONRON_T:8,PELX:1.004};
 const PLACES=[1,4,10,18,28];
 const W=480,H=270,SOL=138;
@@ -1067,7 +1067,7 @@ const imChat=r=>pret(IM.chats[r.img])?IM.chats[r.img]:IM.chats[0];
 // ================= Armes =================
 const ARMES=[
  ['Pistolet','pistol'],['Revolver','pistol'],['Fusil à pompe','shotgun'],['Carabine','rifle'],
- ['Mitraillette','smg'],['Fusil de précision','sniper','perce'],['Tromblon','shotgun','explo'],["Fusil d'assaut",'rifle'],
+ ['Mitraillette','smg'],['Fusil de précision','sniper','perce'],['Tromblon','shotgun','explo'],["Fusil d'assaut",'smg'],
  ['Minigun','smg'],['Canon à pelotes','sniper','explo'],['Blaster','pistol','perce'],['Lance-éclairs','smg','chaine'],
  ['Railgun','sniper','perce'],['Canon à plasma','shotgun','explo'],['Rayon cosmique','smg','chaine'],['Pulsar','rifle','chaine'],
  ['Comète de poche','pistol','explo'],['Fusil à nébuleuse','rifle','chaine'],['Tromblon gravitationnel','shotgun','explo'],['Essaim de météores','smg','perce'],
@@ -1214,7 +1214,7 @@ const REGLES_C=[
  {k:'presse',nom:'Boss pressés',info:'10 s de moins pour battre chaque boss'},
  {k:'morsure',nom:'Morsures profondes',info:'les créatures mordent deux fois plus fort'},
  {k:'disette',nom:'Disette',info:'les créatures laissent 30 % de croquettes en moins'},
- {k:'elite',nom:'Garde dorée',info:'une créature sur dix est dorée (et enragée)'}
+ {k:'elite',nom:'Garde dorée',info:'une créature sur sept est dorée (et enragée)'}
 ];
 const reglesC=s=>{const b=boucleC(s);let l=b>0?REGLES_C.slice(0,Math.min(b,REGLES_C.length)):[];if(S&&S.nuit>0&&S.regleNuit){const r=REGLES_C.find(r=>r.k===S.regleNuit);if(r&&!l.includes(r))l=[r].concat(l)}return l};
 const regleC=s=>{const l=reglesC(s);return l.length?l[l.length-1]:null};
@@ -1247,8 +1247,8 @@ const RECRUES=[
  {id:'cannelle',nom:'Cannelle',img:17,perk:{t:'ecl',v:.5},deb:{defi:'mine',v:120}},
  {id:'sesame',nom:'Sésame',img:18,perk:{t:'crit',v:.05},deb:{succes:20}},
  {id:'biscotte',nom:'Biscotte',img:19,perk:{t:'cible',c:['teleporteur','kamikaze'],v:.5},deb:{defi:'potager',v:12}},
- {id:'givre',nom:'Givre',img:20,perk:{t:'gel'},deb:{rare:2,p:.02}},
- {id:'comete',nom:'Comète',img:21,perk:{t:'meteore'},deb:{rare:18,p:.03}},
+ {id:'givre',nom:'Givre',img:20,perk:{t:'gel'},deb:{rare:2,p:.06}},
+ {id:'comete',nom:'Comète',img:21,perk:{t:'meteore'},deb:{rare:18,p:.08}},
  {id:'opale',nom:'Opale',img:22,perk:{t:'double',v:.15},deb:{legs:4}},
  {id:'charbon',nom:'Charbon',img:23,perk:{t:'pv',v:.5},deb:{stade:101}},
  {id:'nebuleuse',nom:'Nébuleuse',img:24,perk:{t:'equipe',v:.2},deb:{legs:8}}
@@ -1335,7 +1335,7 @@ const AMELIOS=[
  {k:'dmg',nom:'Griffes affûtées',desc:l=>'Dégâts x'+fmtD(1.12**l),cout:l=>25*1.55**l},
  {k:'rate',nom:'Gâchette nerveuse',desc:l=>'Cadence +'+(l*5)+' %',cout:l=>60*1.7**l,max:40},
  {k:'gold',nom:'Croquettes dorées',desc:l=>'Butin +'+(l*15)+' %',cout:l=>40*1.6**l},
- {k:'smith',nom:'Armurier du quartier',desc:l=>'Armes achetées au niveau '+(l+1),cout:l=>400*9**l,max:12},
+ {k:'smith',nom:'Armurier du quartier',desc:l=>'Armes achetées au niveau '+(l+1),cout:l=>400*9**l,max:28},
  {k:'pv',nom:'Coussins blindés',desc:l=>'Points de vie de l’escouade : '+pvMax(l),cout:l=>80*1.75**l,max:30}
 ];
 const RENS=[
@@ -1365,7 +1365,7 @@ function neuf(){return{or:0,pel:0,pelTot:0,ecl:0,stade:1,kills:0,rec:1,best:1,gr
   coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(18).fill(null),petEq:[null,null,null],
   defis:{jour:'',tickets:{boss:3,chasse:3,mine:3,potager:3},niv:{boss:1,potager:1},rec:{chasse:0,mine:0}},
   auto:{fus:false,ach:false},vitesse:1,son:{fond:'lieu',sfx:.8,armes:.35,v:2},
-  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:600},maitrise:Array(20).fill(0),nuit:0,aube:false}}
+  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:300},maitrise:Array(20).fill(0),nuit:0,aube:false}}
 function fusionne(def,o){
   if(o===undefined||o===null)return def;
   if(Array.isArray(def))return Array.isArray(o)?o:def;
@@ -1680,7 +1680,7 @@ function apparition(boss){
     Son.boss();return;
   }
   const poids={};for(const k in TYPES_ENN){const d=TYPES_ENN[k];if(d.des<=s)poids[k]=POIDS_ENN[k]||0}
-  const type=tirage(poids),d=TYPES_ENN[type],elite=s>=3&&Math.random()<(regleAct('elite')?.1:.03);
+  const type=tirage(poids),d=TYPES_ENN[type],elite=s>=3&&Math.random()<(regleAct('elite')?.15:.07);
   const ebi=Math.random()<.3?Math.floor(Math.random()*(lieuMax()+1)):bi;
   const max=pvEnn()*d.pv*(elite?4:1),vol=type==='volant';
   enn.push(nouvelEnn({bi:ebi,type,sc:d.sc,elite,vol,y:vol?SOL-20-Math.random()*40:voieY(Math.floor(Math.random()*5)),pv:max,max,v:Math.min(45,22+s*.3)*d.vit*meteo().vit*(regleAct('rage')?1.3:1)*Math.max(.3,1+modv('vit'))}));
@@ -1754,7 +1754,7 @@ function tue(e){
 // Très rares, seulement quand le joueur est là : une soixantaine de créatures minuscules et très rapides,
 // et une météo qui déborde du terrain sur tout l'écran. Tenir jusqu'au bout rapporte une prime d'éclats.
 // Huit vagues, chacune avec sa règle et sa météo qui déborde du terrain sur tout l'écran.
-// Elles sont très rares : 0,8 % de chances par stade franchi, jamais deux en moins de 45 minutes, et seulement si le
+// Elles sont rares : 4,5 % de chances par stade franchi, jamais deux en moins de 10 minutes, et seulement si le
 // joueur a touché le jeu dans les 2 dernières minutes. Certaines sont encore plus rares (poids plus faible).
 const VAGUES_SP={
  deluge:{nom:'DÉLUGE',poids:3,meteo:'orage',nb:60,iv:.17,gen:()=>({type:'mini',sc:.55,pvf:C.VS_PV,vit:2.6})},
@@ -1770,7 +1770,7 @@ let VS=null,derniereAction=Date.now(),vsDernier=0;
 ['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>{derniereAction=Date.now()},true));
 const joueurLa=()=>!document.hidden&&Date.now()-derniereAction<120000;
 function tenteVagueSpeciale(force){
-  if(VS||D||(!force&&(S.stade<10||!joueurLa()||(Date.now()-vsDernier<45*60000&&!modv('vs'))||Math.random()>.008*(1+modv('vs')))))return;
+  if(VS||D||(!force&&(S.stade<10||!joueurLa()||(Date.now()-vsDernier<10*60000&&!modv('vs'))||Math.random()>.045*(1+modv('vs')))))return;
   const k=force||tirage(Object.fromEntries(Object.entries(VAGUES_SP).map(([k,v])=>[k,v.poids])));
   VS={k,...VAGUES_SP[k],reste:VAGUES_SP[k].nb,spT:1.5,n:0,t:0};vsDernier=Date.now();
   if(!S.stats.vsVues)S.stats.vsVues=[];if(!S.stats.vsVues.includes(k))S.stats.vsVues.push(k);
@@ -2507,7 +2507,7 @@ if(ASSETS.eclat)document.querySelectorAll('.gemme').forEach(g=>{const i=document
 $('ai-repli').innerHTML=ICO_REPLI;$('ai-reprise').innerHTML=ICO_REPRISE;
 
 // ================= Scènes : les chats parlent =================
-// Une scène entre deux stades, environ toutes les 20 à 30 minutes de jeu actif (jamais en défi, en vague spéciale ni hors ligne).
+// Une scène entre deux stades, environ toutes les 5 à 7 minutes de jeu actif (jamais en défi, en vague spéciale ni hors ligne).
 // Le combat est figé pendant la scène. Les scènes vues s'ajoutent au carnet des récits (Collection).
 let enScene=false,sceneCour=null;
 const ICO_CH={
@@ -2542,7 +2542,7 @@ function tenteScene(force){
   if(D||VS||enScene||enRetraite())return;
   if(!force&&(!joueurLa()||S.recits.tActif<S.recits.prochain))return;
   const r=typeof force==='string'?RECITS.find(x=>x.id===force):choisitScene();if(!r)return;
-  S.recits.tActif=0;S.recits.prochain=1200+Math.random()*600;montreScene(r);
+  S.recits.tActif=0;S.recits.prochain=300+Math.random()*120;montreScene(r);
 }
 function imgScene(r){
   const A=ASSETS.recits||{},fond=ASSETS.fonds[biomeIdx(S.stade)]||ASSETS.fonds[0];
