@@ -425,7 +425,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 6 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 7 oct. 2026</p></div>
     </div>
   </div>
 
@@ -1054,6 +1054,9 @@ const RECITS=[
 const ARC_PERK={mandarine:{t:'equipe',v:.05,nom:'Cheffe de meute'},grisou:{t:'or',v:.15,nom:'Vieux briscard'},minuit:{t:'boss',v:.25,nom:'Lectrice des fins'},charbon:{t:'pv',v:.2,nom:'Forge rallumée'},nebuleuse:{t:'ecl',v:.3,nom:'Fille des brumes'}};
 const FAM_RECIT={rep:'Répliques',trou:'Trouvailles',dil:'Dilemmes',pres:'Présages',arc:'Histoires',cau:'Voix du Cauchemar'};
 
+// Récits de la collection : seules les histoires des chats (chapitres) se collectionnent ; les autres scènes se jouent sans compter
+const FAM_COLL=['arc'];
+const RECITS_COLL=RECITS.filter(r=>FAM_COLL.includes(r.f));
 // ================= Réglages d'équilibrage =================
 const C={MAITRISE:10,LEG_DUREE:40,LEG_RECH:600,VS_PV:.6,LEG:.12,KILLS:20,BOSS_T:30,BOSS_M:10,HP0:10,HPG:1.47,OR0:2,ORG:1.37,DPS0:4,DPSG:2.05,ACH0:10,ACHG:1.12,SLOTS:12,REN_MIN:8,OFF_EFF:0.5,
   CRIT0:.05,CRITM:2,TICKETS:3,DEFI_T:60,INVOC:60,ECL_BOSS:2,ESPRIT:.25,RONRON_T:8,PELX:1.004};
@@ -1178,7 +1181,7 @@ function nuitParts(){
   const m=S.maitrise.reduce((a,b)=>a+Math.min(b,C.MAITRISE),0)/(BIOMES.length*C.MAITRISE);
   const best=(TYPES_VUS.filter(t=>S.vus.includes(t)).length+BIOMES.filter((_,i)=>lieuVu(i)).length+S.bossVus.length)/(TYPES_VUS.length+2*BIOMES.length);
   const chats=S.coll.length/RECRUES.length;
-  const arcs=Object.values(S.recits.arcs).filter(n=>n>=3).length/5,scenes=S.recits.vus.length/RECITS.length;
+  const arcs=Object.values(S.recits.arcs).filter(n=>n>=3).length/5,scenes=RECITS_COLL.filter(r=>S.recits.vus.includes(r.id)).length/RECITS_COLL.length;
   const succ=S.succes.filter(id=>id!=='aube').length/(SUCCES.length-1),legs=S.leg.length/LEGS.length;
   return [['Lieux maîtrisés',m,.3],['Bestiaire',best,.2],['Chats',chats,.2],['Histoires et récits',(arcs+scenes)/2,.2],['Succès et légendaires',(succ+legs)/2,.1]];
 }
@@ -1396,7 +1399,7 @@ function neuf(){return{reve:false,reveJour:'',reveBilan:null,reveRecord:0,or:0,p
   coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(24).fill(null),petEq:[null,null,null],
   defis:{jour:'',tickets:{boss:3,chasse:3,mine:3,potager:3},niv:{boss:1,potager:1},rec:{chasse:0,mine:0}},
   auto:{fus:false,ach:false},vitesse:1,son:{fond:'lieu',sfx:.8,armes:.35,v:2},
-  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:300},maitrise:Array(20).fill(0),nuit:0,aube:false}}
+  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:180},maitrise:Array(20).fill(0),nuit:0,aube:false}}
 function fusionne(def,o){
   if(o===undefined||o===null)return def;
   if(Array.isArray(def))return Array.isArray(o)?o:def;
@@ -2555,7 +2558,7 @@ if(ASSETS.eclat)document.querySelectorAll('.gemme').forEach(g=>{const i=document
 $('ai-repli').innerHTML=ICO_REPLI;$('ai-reprise').innerHTML=ICO_REPRISE;
 
 // ================= Scènes : les chats parlent =================
-// Une scène entre deux stades, environ toutes les 5 à 7 minutes de jeu actif (jamais en défi, en vague spéciale ni hors ligne).
+// Une scène entre deux stades, environ toutes les 3 à 4 minutes de jeu actif (jamais en défi, en vague spéciale ni hors ligne).
 // Le combat est figé pendant la scène. Les scènes vues s'ajoutent au carnet des récits (Collection).
 let enScene=false,sceneCour=null;
 const ICO_CH={
@@ -2568,8 +2571,8 @@ const icoCh=i=>i==='croq'?'<img src="'+ASSETS.croquette+'" alt="">':i==='lune'?'
 const txL=(fr,en)=>enAnglais()?en:fr;
 const nomChat=id=>T(RECRUES[RID[id]].nom);
 function sceneOk(r){
-  const act=actifs().map(x=>x.id);
-  if(r.qui&&!r.qui.every(id=>act.includes(id)))return false;
+  // Il suffit d'avoir recruté les chats de la scène, pas de les avoir dans l'escouade
+  if(r.qui&&!r.qui.every(id=>S.coll.includes(id)))return false;
   if(r.lieu!==undefined&&biomeIdx(S.stade)!==r.lieu)return false;
   if(r.min&&S.best<r.min)return false;
   if(r.f==='cau'&&!boucleC(S.stade))return false;
@@ -2580,7 +2583,7 @@ function sceneOk(r){
 function choisitScene(){
   const ok=RECITS.filter(sceneOk);if(!ok.length)return null;
   const neuf=r=>!S.recits.vus.includes(r.id);
-  const arcs=ok.filter(r=>r.f==='arc');if(arcs.length&&Math.random()<.5)return choix(arcs);
+  const arcs=ok.filter(r=>r.f==='arc');if(arcs.length&&Math.random()<.65)return choix(arcs);
   const poids={rep:4,trou:3,dil:3,pres:1,cau:4},fam={};
   for(const r of ok)if(r.f!=='arc')(fam[r.f]=fam[r.f]||[]).push(r);
   const p={};for(const k in fam)p[k]=poids[k];if(!Object.keys(p).length)return arcs.length?choix(arcs):null;
@@ -2591,7 +2594,7 @@ function tenteScene(force){
   if(D||VS||enScene||enRetraite())return;
   if(!force&&(!joueurLa()||S.recits.tActif<S.recits.prochain))return;
   const r=typeof force==='string'?RECITS.find(x=>x.id===force):choisitScene();if(!r)return;
-  S.recits.tActif=0;S.recits.prochain=300+Math.random()*120;montreScene(r);
+  S.recits.tActif=0;S.recits.prochain=180+Math.random()*60;montreScene(r);
 }
 function imgScene(r){
   const A=ASSETS.recits||{},fond=ASSETS.fonds[biomeIdx(S.stade)]||ASSETS.fonds[0];
@@ -2723,7 +2726,7 @@ function collCompte(){
   const lieux=BIOMES.filter((_,i)=>lieuVu(i)).length;
   const r={chats:[S.coll.length,RECRUES.length],armes:[S.leg.length,LEGS.length],lieux:[lieux,BIOMES.length],
     best:[TYPES_VUS.filter(t=>S.vus.includes(t)).length+lieux+S.bossVus.length,TYPES_VUS.length+2*BIOMES.length],
-    mus:[MUSIQUES.filter(m=>musOk(m.id)).length,MUSIQUES.length],recits:[RECITS.filter(r=>S.recits.vus.includes(r.id)).length,RECITS.length]};
+    mus:[MUSIQUES.filter(m=>musOk(m.id)).length,MUSIQUES.length],recits:[RECITS_COLL.filter(r=>S.recits.vus.includes(r.id)).length,RECITS_COLL.length]};
   return r;
 }
 function ouvreColl(rub){coll.hidden=false;collRub=rub||collRub;collSel=null;majColl();Son.clic()}
@@ -2747,7 +2750,7 @@ function majColl(){
   if(collRub==='mus')h=MUSIQUES.map(m=>{const ok=musOk(m.id);return '<button class="ct mus'+(ok?'':' sil')+'" data-k="'+m.id+'" aria-pressed="'+(ok&&S.son.fond===m.id)+'">'+(ok?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>'+m.nom+'</span>':'<span class="ct-q">?</span><span>???</span>')+'</button>'}).join('');
   if(collRub==='recits'){
     // Par famille : les scènes déjà vécues, puis une seule ligne pour celles qui restent à découvrir
-    h='';for(const f of Object.keys(FAM_RECIT)){const l=RECITS.filter(r=>r.f===f),vus=l.filter(r=>S.recits.vus.includes(r.id)),reste=l.length-vus.length;
+    h='';for(const f of FAM_COLL){const l=RECITS.filter(r=>r.f===f),vus=l.filter(r=>S.recits.vus.includes(r.id)),reste=l.length-vus.length;
       h+='<p class="ct-titre">'+ICO_FAM[f]+T(FAM_RECIT[f])+'<span class="ct-nb">'+vus.length+' / '+l.length+'</span></p>';
       h+=vus.map(r=>'<button class="ct mus recit'+(collSel===r.id?' sel':'')+'" data-k="'+r.id+'"><span>'+titreRecit(r)+'</span></button>').join('');
       if(reste)h+='<p class="ct-reste">'+(vus.length?'+ ':'')+reste+' '+T(reste>1?'à découvrir':'à découvrir')+'</p>'}
