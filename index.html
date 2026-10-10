@@ -397,12 +397,14 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
 .reve-carte{border-color:#c79bff!important;background:linear-gradient(135deg,rgba(199,155,255,.14),transparent)}
 #p-pet .bloc{padding:6px 12px}#p-pet .bloc h2{display:flex;align-items:center;gap:8px}.tris{display:flex;flex-direction:column;gap:5px;justify-content:center}.tris .mini-btn{flex:1;min-height:30px;padding:0 10px 0 6px;display:flex;align-items:center;gap:3px;font-size:.78rem}.tris svg{width:14px;height:14px}#p-pet .pet-case{aspect-ratio:6/3.6}#p-pet .actions .btn{padding-top:7px;padding-bottom:7px}#p-pet .pets-eq canvas{width:42px;height:42px}#p-pet .pets-eq .carte{padding:4px 4px 5px}
 .pet-case.sel{outline:2.5px solid var(--encre);outline-offset:-2px}.pet-case.paire::after{content:'+';position:absolute;right:3px;top:1px;width:15px;height:15px;border-radius:50%;background:var(--encre);color:#1b1424;font:700 12px/15px Fredoka,system-ui;text-align:center}
+.titre{position:relative}.badge-ngp{position:absolute;right:-10px;bottom:-3px;display:flex;align-items:center;gap:1px;height:19px;min-width:19px;padding:0 4px;border-radius:10px;border:1.5px solid #ffd36b;background:#1b1424;color:#ffd36b;cursor:pointer;font:700 10px/1 Fredoka,system-ui}.badge-ngp svg{width:11px;height:11px}#b-ngp{padding:5px 10px;font-size:.78rem}
+#m-texte{white-space:pre-line}
 </style>
 
 <div class="app">
   <div class="haut">
   <div class="entete">
-    <div class="titre"><img class="logo" id="logo" alt="Escouade Ronron"></div>
+    <div class="titre"><img class="logo" id="logo" alt="Escouade Ronron"><button class="badge-ngp" id="badge-ngp" hidden></button></div>
     <div class="ressources">
       <button class="btn-son" id="b-menu" aria-haspopup="menu" aria-expanded="false" title="Réglages" aria-label="Réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.5-2-3.5-2.4 1a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5a7.6 7.6 0 0 0-2.6 1.5l-2.4-1-2 3.5 2 1.5a7.6 7.6 0 0 0 0 3l-2 1.5 2 3.5 2.4-1a7.6 7.6 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 2.6-1.5l2.4 1 2-3.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
       <div class="menu" id="menu" role="menu" hidden>
@@ -425,7 +427,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 7 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 10 oct. 2026</p></div>
     </div>
   </div>
 
@@ -523,7 +525,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
 <div class="voile" id="coll" role="dialog" aria-label="Collection" hidden>
   <div class="boite aide-boite coll-boite">
     <div class="aide-tete"><h2>La Nuit <small id="coll-total"></small><span id="nuit-soleils"></span></h2><button class="btn second" id="b-coll-ok">Fermer</button></div>
-    <div class="nuit-ligne"><div class="nuit-barre" title=""><div id="nuit-jauge"></div></div><button class="btn rose" id="b-nuit" hidden>Nouvelle Nuit</button></div>
+    <div class="nuit-ligne"><div class="nuit-barre" title=""><div id="nuit-jauge"></div></div><button class="btn rose" id="b-nuit" hidden>Nouvelle Nuit</button><button class="btn" id="b-ngp" hidden>Nouvelle partie +</button></div>
     <div class="segment aide-onglets coll-onglets" role="tablist">
       <button data-cr="chats" aria-label="Chats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l4.5 4.5h7L20 4v10a8 8 0 0 1-16 0z" fill="currentColor"/></svg><span></span></button>
       <button data-cr="armes" aria-label="Armes légendaires"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h13l3-2h4v5h-4l-3-2H9l-2 5H4l1.5-5H2z" fill="currentColor"/><path d="M8 3l1 2.2 2.4.3-1.8 1.6.5 2.4L8 8.3 5.9 9.5l.5-2.4-1.8-1.6 2.4-.3z" fill="currentColor"/></svg><span></span></button>
@@ -633,7 +635,7 @@ const EN={
  'Ciel qui gronde':'Rumbling sky','Vagues spéciales bien plus probables':'Special waves far more likely','galvanisé':'fired up','blessé':'wounded','Dégâts de ce chat':'This cat’s damage','à l’arrière':'at the back','Ce chat ne tire pas':'This cat does not shoot',
  'Type d’arme':'Weapon type','La silhouette en haut à droite d’une tuile : pistolet, fusil, fusil à pompe, mitraillette ou arme de précision. Le bonus d’un chat pour un type vaut pour toutes les armes de ce type, et seulement pour elles.':'The silhouette at the top right of a tile: pistol, rifle, shotgun, submachine gun or precision weapon. A cat’s bonus for a type applies to every weapon of that type, and only to them.',
  'équipée':'equipped','fissurée':'cracked','Règles du Cauchemar':'Nightmare rules','en cours':'current','La Baignoire sans fond':'The Bottomless Bathtub','L’Aspirateur':'The Vacuum','Chez le vétérinaire':'At the Vet','La Gamelle vide':'The Empty Bowl','Le Champ de concombres':'The Cucumber Field','Moustache Trempée':'Soggy Whiskers','Chat-Tornade':'Tornado Cat','Docteur Ronron':'Doctor Purr','Gros Affamé':'Big Hungry','Le Sursauteur':'The Startler','Canard du rêve':'Dream Duck','Aspi docile':'Tame Vacuum','Cône de honte':'Cone of Shame','Concombre':'Cucumber','Le cauchemar d’un chat':'A Cat’s Nightmare','Une fois par jour, Mandarine fait un drôle de rêve : tu repars de zéro dans une autre dimension, où des monstres tirent sur des chats. La première chute te réveille. Plus tu vas loin, meilleur est le familier exclusif que tu rapportes. Ta partie principale t’attend, intacte.':'Once a day, Mandarine has a strange dream: you start from scratch in another dimension, where monsters shoot at cats. Your first fall wakes you up. The further you go, the better the exclusive familiar you bring back. Your main game waits for you, untouched.','S’endormir':'Fall asleep','Plus tard':'Later','Réveil':'Waking up','Mandarine se réveille en sursaut, les griffes plantées dans le coussin.':'Mandarine wakes with a start, claws stuck in the cushion.','Mandarine ouvre un œil. Ce n’était qu’un rêve. Probablement.':'Mandarine opens one eye. It was only a dream. Probably.','Dans le cauchemar, les monstres ont tenu jusqu’au stade':'In the nightmare, the monsters held out until stage','record du rêve':'dream record','Familiers pleins':'Familiars full','éclats':'shards','Familier exclusif':'Exclusive familiar','Super':'Great','Une partie par jour dans une autre dimension : tu joues les monstres, les chats sont la cible. Rapporte un familier exclusif.':'One run a day in another dimension: you play the monsters, the cats are the target. Bring back an exclusive familiar.','Record du rêve':'Dream record','stade':'stage','disponible':'available','reviens demain':'come back tomorrow','Dormir':'Sleep','Se réveiller ?':'Wake up?','La partie dans le rêve s’arrête ici. Ta récompense dépend du stade atteint.':'The dream run ends here. Your reward depends on the stage reached.','Se réveiller':'Wake up','Continuer':'Keep going',
- 'Trier par espèce puis par grade':'Sort by species, then by grade','Espèce':'Species','Grade':'Grade','Trier par grade puis par espèce':'Sort by grade, then by species','Canon à plasma':'Plasma cannon','Rayon cosmique':'Cosmic ray','Pulsar':'Pulsar',
+ 'Trier par espèce puis par grade':'Sort by species, then by grade','Espèce':'Species','Grade':'Grade','Trier par grade puis par espèce':'Sort by grade, then by species','Nouvelle partie +':'New Game +','Tout recommence au stade 1 : croquettes, armes, chats, familiers, pelotes, éclats, légendaires, récits et la Nuit. Seuls tes réglages sont gardés. En échange, pour chaque quartier sauvé : +50 % de pelotes à chaque renaissance, familiers 25 % plus forts et plafonds des bonus relevés de 50 %. Un badge à côté du logo le rappelle.':'Everything restarts at stage 1: kibble, weapons, cats, familiars, yarn, shards, legendaries, stories and the Night. Only your settings are kept. In return, for each neighborhood saved: +50% yarn on every rebirth, familiars 25% stronger and upgrade caps raised by 50%. A badge next to the logo shows it.','Recommencer':'Restart','Pas maintenant':'Not now','Quartier sauvé':'Neighborhood saved','Tu as sauvé le quartier':'You saved the neighborhood','fois.':'times.','Tu as déjà sauvé le quartier une fois.':'You already saved the neighborhood once.','Mandarine se réveille dans la forêt, griffes neuves, gamelle vide. Le quartier est sauvé, mais la nuit a d’autres rues.':'Mandarine wakes up in the forest, fresh claws, empty bowl. The neighborhood is safe, but the night has other streets.','En route':'Let’s go','Pelotes de renaissance':'Rebirth yarn','Plafonds des bonus':'Upgrade caps','Canon à plasma':'Plasma cannon','Rayon cosmique':'Cosmic ray','Pulsar':'Pulsar',
  'Comète de poche':'Pocket comet','Fusil à nébuleuse':'Nebula rifle','Tromblon gravitationnel':'Gravity blunderbuss','Essaim de météores':'Meteor swarm',
  'Lance-quasar':'Quasar launcher','Trou noir portatif':'Portable black hole','Arc d’aurore':'Aurora bow','Pistolet temporel':'Time pistol',
  'Canon à supernova':'Supernova cannon','Tempête solaire':'Solar storm','Fusil antimatière':'Antimatter rifle','Faucheuse d’étoiles':'Star reaper',
@@ -1351,7 +1353,7 @@ const ESPECES=[
 ];
 // Les familiers du rêve ne s'invoquent pas : on les gagne seulement dans la dimension parallèle (valeurs x1,5)
 const especeInvoc=()=>{const l=ESPECES.map((e,i)=>e.reve?-1:i).filter(i=>i>=0);return l[Math.floor(Math.random()*l.length)]};
-const vPet=p=>Math.round(VAL[ESPECES[p.e].stat][p.g]*(ESPECES[p.e].x||1));
+const vPet=p=>Math.round(VAL[ESPECES[p.e].stat][p.g]*(ESPECES[p.e].x||1)*(1+.25*ngpN()));
 const GRADES=['D','C','B','A','S','SS','SSS'];
 const VAL={cad:[3,6,10,15,22,30,40],or:[10,25,50,90,150,250,400],dmg:[10,25,50,90,150,250,400],crit:[1,2,4,6,9,12,16],critd:[20,40,70,110,160,230,320],off:[10,20,35,55,80,110,150]};
 const STAT_NOM={cad:'Cadence',or:'Butin',dmg:'Dégâts',crit:'Critique',critd:'Dégâts crit.',off:'Hors ligne'};
@@ -1365,18 +1367,21 @@ const DEFIS=[
 ];
 
 // ================= Améliorations =================
+// Nouvelle partie + : chaque quartier sauvé relève les plafonds de 50 %, les pelotes de 50 % et les familiers de 25 %
+const ngpN=()=>(typeof S!=='undefined'&&S&&S.ngp)||0;
+const maxNgp=m=>Math.round(m*(1+.5*ngpN()));
 const AMELIOS=[
  {k:'dmg',nom:'Griffes affûtées',desc:l=>'Dégâts x'+fmtD(1.12**l),cout:l=>25*1.55**l},
- {k:'rate',nom:'Gâchette nerveuse',desc:l=>'Cadence +'+(l*5)+' %',cout:l=>60*1.7**l,max:40},
+ {k:'rate',nom:'Gâchette nerveuse',desc:l=>'Cadence +'+(l*5)+' %',cout:l=>60*1.7**l,get max(){return maxNgp(40)}},
  {k:'gold',nom:'Croquettes dorées',desc:l=>'Butin +'+(l*15)+' %',cout:l=>40*1.6**l},
- {k:'smith',nom:'Armurier du quartier',desc:l=>'Armes achetées au niveau '+(l+1),cout:l=>400*9**l,max:28},
- {k:'pv',nom:'Coussins blindés',desc:l=>'Points de vie de l’escouade : '+pvMax(l),cout:l=>80*1.75**l,max:30}
+ {k:'smith',nom:'Armurier du quartier',desc:l=>'Armes achetées au niveau '+(l+1),cout:l=>400*9**l,get max(){return maxNgp(28)}},
+ {k:'pv',nom:'Coussins blindés',desc:l=>'Points de vie de l’escouade : '+pvMax(l),cout:l=>80*1.75**l,get max(){return maxNgp(30)}}
 ];
 const RENS=[
  {k:'dmg',nom:'Ronron éternel',desc:l=>'Dégâts +'+(l*25)+' %',cout:l=>Math.ceil(2*1.45**l)},
  {k:'gold',nom:"Pattes d'or",desc:l=>'Butin +'+(l*25)+' %',cout:l=>Math.ceil(2*1.45**l)},
- {k:'start',nom:'Départ lancé',desc:l=>'Repart au stade '+(1+3*l),cout:l=>Math.ceil(5*1.8**l),max:10},
- {k:'sleep',nom:'Sieste profonde',desc:l=>"Gains hors ligne jusqu'à "+(4+2*l)+' h',cout:l=>Math.ceil(3*1.6**l),max:10}
+ {k:'start',nom:'Départ lancé',desc:l=>'Repart au stade '+(1+3*l),cout:l=>Math.ceil(5*1.8**l),get max(){return maxNgp(10)}},
+ {k:'sleep',nom:'Sieste profonde',desc:l=>"Gains hors ligne jusqu'à "+(4+2*l)+' h',cout:l=>Math.ceil(3*1.6**l),get max(){return maxNgp(10)}}
 ];
 
 // ================= Nombres =================
@@ -1394,12 +1399,12 @@ function fmtD(n){return n<100?(enAnglais()?n.toFixed(2):n.toFixed(2).replace('.'
 // ================= État =================
 let S;
 function jourAuj(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
-function neuf(){return{reve:false,reveJour:'',reveBilan:null,reveRecord:0,or:0,pel:0,pelTot:0,ecl:0,stade:1,kills:0,rec:1,best:1,grille:[1].concat(Array(C.SLOTS-1).fill(0)),achats:0,
+function neuf(){return{ngp:0,ngpScene:false,reve:false,reveJour:'',reveBilan:null,reveRecord:0,or:0,pel:0,pelTot:0,ecl:0,stade:1,kills:0,rec:1,best:1,grille:[1].concat(Array(C.SLOTS-1).fill(0)),achats:0,
   up:{dmg:0,rate:0,gold:0,smith:0,pv:0},rb:{dmg:0,gold:0,start:0,sleep:0},taux:0,vu:Date.now(),nbRen:0,
   coll:['mandarine'],esc:['mandarine'],vus:['normal'],pets:Array(24).fill(null),petEq:[null,null,null],
   defis:{jour:'',tickets:{boss:3,chasse:3,mine:3,potager:3},niv:{boss:1,potager:1},rec:{chasse:0,mine:0}},
   auto:{fus:false,ach:false},vitesse:1,son:{fond:'lieu',sfx:.8,armes:.35,v:2},
-  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:180},maitrise:Array(20).fill(0),nuit:0,aube:false}}
+  reg:{vib:true,notif:true,notifDem:false},depart:1,introVue:false,lang:(navigator.language||'fr').toLowerCase().startsWith('fr')?'fr':'en',succes:[],stats:{boss:0},renSignal:false,leg:[],legEq:null,legRech:0,bossVus:[],perte:null,mods:[],recits:{vus:[],arcs:{},tActif:0,prochain:120},maitrise:Array(20).fill(0),nuit:0,aube:false}}
 function fusionne(def,o){
   if(o===undefined||o===null)return def;
   if(Array.isArray(def))return Array.isArray(o)?o:def;
@@ -1494,7 +1499,7 @@ const orEnn=()=>C.OR0*C.ORG**(S.stade-1)*multOr()*meteo().or*(1+modv('or'))*(reg
 // Pelotes : seule la progression faite dans cette vie compte (les stades sautés grâce à « Départ lancé » ne rapportent rien)
 // Les vies longues paient davantage : au-delà du stade 20, prime croissante jusqu'à +60 % au stade 60
 const valPel=r=>r<C.REN_MIN?0:Math.floor(((r-C.REN_MIN)/2+1)**1.5*(1+.6*Math.min(1,Math.max(0,(r-20)/40))));
-const gainPel=()=>Math.round(Math.max(0,valPel(S.rec)-valPel(S.depart||1))*(1+.1*(boucleC(S.rec)>0?Math.min(boucleC(S.rec),REGLES_C.length):0)));
+const gainPel=()=>Math.round((1+.5*ngpN())*Math.max(0,valPel(S.rec)-valPel(S.depart||1))*(1+.1*(boucleC(S.rec)>0?Math.min(boucleC(S.rec),REGLES_C.length):0)));
 // Stade à dépasser pour gagner au moins une pelote
 function stadeUtile(){let r=Math.max(C.REN_MIN,S.rec);while(valPel(r)-valPel(S.depart||1)<1&&r<9999)r++;return r}
 function dpsArme(t){return C.DPS0*C.DPSG**(t-1)*multDmg()}
@@ -2558,7 +2563,7 @@ if(ASSETS.eclat)document.querySelectorAll('.gemme').forEach(g=>{const i=document
 $('ai-repli').innerHTML=ICO_REPLI;$('ai-reprise').innerHTML=ICO_REPRISE;
 
 // ================= Scènes : les chats parlent =================
-// Une scène entre deux stades, environ toutes les 3 à 4 minutes de jeu actif (jamais en défi, en vague spéciale ni hors ligne).
+// Une scène entre deux stades, environ toutes les 2 à 3 minutes de jeu actif (jamais en défi, en vague spéciale ni hors ligne).
 // Le combat est figé pendant la scène. Les scènes vues s'ajoutent au carnet des récits (Collection).
 let enScene=false,sceneCour=null;
 const ICO_CH={
@@ -2594,7 +2599,7 @@ function tenteScene(force){
   if(D||VS||enScene||enRetraite())return;
   if(!force&&(!joueurLa()||S.recits.tActif<S.recits.prochain))return;
   const r=typeof force==='string'?RECITS.find(x=>x.id===force):choisitScene();if(!r)return;
-  S.recits.tActif=0;S.recits.prochain=180+Math.random()*60;montreScene(r);
+  S.recits.tActif=0;S.recits.prochain=120+Math.random()*60;montreScene(r);
 }
 function imgScene(r){
   const A=ASSETS.recits||{},fond=ASSETS.fonds[biomeIdx(S.stade)]||ASSETS.fonds[0];
@@ -2626,7 +2631,7 @@ $('scene').addEventListener('click',e=>{
   if(!res.r&&!res.gains.length){fermeScene();return}
   ch.innerHTML=(res.r?'<p class="ligne narr resultat">'+txL(res.r[0],res.r[1])+'</p>':'')+(res.gains.length?'<p class="scene-gains">'+res.gains.join(' · ')+'</p>':'')+'<button class="btn choix" data-k="-1" data-fin="1"><span class="ch-i">'+ICO_CH.suite+'</span>'+T('Continuer')+'</button>';
 });
-function fermeScene(){$('scene').hidden=true;enScene=false;sceneCour=null;calcEquipe();majGrille();majEscouade();majHud();sauve()}
+function fermeScene(){$('scene').hidden=true;enScene=false;sceneCour=null;calcEquipe();majGrille();majEscouade();majHud();sauve();if(ngpDemande){ngpDemande=false;setTimeout(demandeNgp,250)}}
 function appliqueEffets(e){
   const res={r:null,gains:[]};if(!e)return res;
   if(e.alea){let x=Math.random(),o=e.alea[e.alea.length-1];for(const a of e.alea){x-=a.p;if(x<=0){o=a;break}}const sub=appliqueEffets(o.e);res.r=o.r;res.gains.push(...sub.gains)}
@@ -2639,6 +2644,7 @@ function appliqueEffets(e){
   if(e.saut){const avant=S.stade;S.stade=e.saut>0?Math.min(Math.max(S.best,S.stade),S.stade+e.saut):Math.max(S.depart||1,S.stade+e.saut);if(S.stade>S.rec)S.rec=S.stade;S.kills=0;bossActif=false;enn=enn.filter(x=>!x.boss);recupPerte();if(S.stade!==avant)res.gains.push(T('Stade')+' '+S.stade)}
   if(e.pvPct&&pvEsc!==null)pvEsc=Math.max(1,pvEsc*(1+e.pvPct));
   if(e.nouvelleNuit)nouvelleNuit();
+  if(e.ngp)ngpDemande=true;
   if(e.rendPerte&&S.perte){S.pel+=S.perte.pel;res.gains.push('+'+S.perte.pel+' pelotes');S.perte=null}
   if(e.mods)for(const m0 of e.mods){const m={...m0};
     if(m.t==='off'&&m.id==='?'){const c=actifs().slice(1);if(!c.length)continue;m.id=choix(c).id}
@@ -2648,6 +2654,24 @@ function appliqueEffets(e){
   return res;
 }
 
+
+// ================= Nouvelle partie + : après l'aube, tout recommencer avec le badge « quartier sauvé » =================
+let ngpDemande=false;
+function demandeNgp(){
+  if(!S.aube)return;
+  modale(T('Nouvelle partie +'),T('Tout recommence au stade 1 : croquettes, armes, chats, familiers, pelotes, éclats, légendaires, récits et la Nuit. Seuls tes réglages sont gardés. En échange, pour chaque quartier sauvé : +50 % de pelotes à chaque renaissance, familiers 25 % plus forts et plafonds des bonus relevés de 50 %. Un badge à côté du logo le rappelle.'),'',T('Recommencer'),nouvellePartiePlus,T('Pas maintenant'));
+}
+function nouvellePartiePlus(){
+  if(!S.aube)return;
+  const garde={son:S.son,lang:S.lang,reg:S.reg,auto:S.auto,introVue:true,ngp:(S.ngp||0)+1,ngpScene:true,reveJour:S.reveJour,reveRecord:S.reveRecord};
+  S=Object.assign(neuf(),garde);sauve();location.reload();
+}
+function majBadgeNgp(){
+  const b=$('badge-ngp');if(!b)return;const n=S.ngp||0;b.hidden=!n;
+  b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z" fill="currentColor"/></svg>'+(n>1?'<b>'+n+'</b>':'');
+  b.setAttribute('aria-label',T('Quartier sauvé')+(n>1?' x'+n:''));
+}
+function montreNgp(){Son.clic();const n=S.ngp||0;modale(T('Quartier sauvé'),(n>1?T('Tu as sauvé le quartier')+' '+n+' '+T('fois.'):T('Tu as déjà sauvé le quartier une fois.'))+'\n'+T('Pelotes de renaissance')+' +'+(50*n)+' %\n'+T('Familiers')+' +'+(25*n)+' %\n'+T('Plafonds des bonus')+' +'+(50*n)+' %','',T('Fermer'))}
 // ================= Dimension parallèle : le cauchemar d'un chat =================
 // Une partie par jour, depuis zéro, dans une sauvegarde à part (CLE_REVE). On y joue des monstres qui tirent sur des chats.
 // La première chute (ou le réveil volontaire) termine la partie : retour au jeu principal, intact, avec un familier exclusif.
@@ -2700,6 +2724,7 @@ function montreAube(){
   const nuit2=S.nuit>=1;
   const r={id:'aube',f:'arc',img:'s_aube',l:AUBE_L.concat([[null,'Mémoire de l’escouade : '+S.stats.boss+' boss abattus, '+(S.stats.chutes||0)+' chutes, '+S.nbRen+' renaissances.','Squad memory: '+S.stats.boss+' bosses slain, '+(S.stats.chutes||0)+' falls, '+S.nbRen+' rebirths.']]),
     ch:[{i:'suite',fr:'Rester à l’aube',en:'Stay in the dawn',e:{},r:['Le jeu continue tel quel. La Nouvelle Nuit t’attend dans la Collection quand tu voudras.','The game goes on as it is. The New Night waits for you in the Collection whenever you want.']},
+        {i:'patte',fr:'Nouvelle partie +',en:'New Game +',e:{ngp:true},r:['Le quartier est sauvé. Ailleurs, une autre nuit commence, et elle ne sait pas encore qui vous êtes.','The neighborhood is safe. Elsewhere, another night begins, and it does not know who you are yet.']},
         ...(nuit2?[]:[{i:'crane',fr:'Entrer dans la Nouvelle Nuit',en:'Enter the New Night',e:{nouvelleNuit:true},r:['La nuit retombe, plus épaisse. Tu gardes tout. Les créatures ont deux fois plus de vie, et une règle du Cauchemar ne te quittera plus.','Night falls again, thicker. You keep everything. Creatures have twice the health, and one Nightmare rule will never leave you.']}])]};
   montreScene(r);Son.renaissance();vibre('succes');
 }
@@ -2710,6 +2735,8 @@ function nouvelleNuit(){
   enn=[];balles=[];bossActif=false;VS=null;majVsOverlay();pvEsc=null;calcEquipe();majGrille();majListes();majEscouade();majHud();
   toast('Nouvelle Nuit '+S.nuit+' : '+REGLES_C.find(r=>r.k===S.regleNuit).nom,'cauchemar');
 }
+$('b-ngp').onclick=()=>{fermeColl();Son.clic();demandeNgp()};
+$('badge-ngp').onclick=montreNgp;
 $('b-nuit').onclick=()=>{if(!S.aube||S.nuit>=2)return;fermeColl();Son.clic();
   modale('Nouvelle Nuit','Tu gardes tout : chats, légendaires, récits, musiques, pelotes. Tu repars au stade 1 avec des créatures deux fois plus résistantes et une règle du Cauchemar active en permanence. La jauge de la Nuit repart de zéro pour les lieux à maîtriser.','','Entrer dans la Nouvelle Nuit',()=>{nouvelleNuit();Son.renaissance()},'Pas maintenant')};
 // Carnet des récits (dans la Collection)
@@ -2736,7 +2763,7 @@ function majColl(){
   coll.querySelectorAll('[data-cr]').forEach(x=>{const k=x.dataset.cr;x.setAttribute('aria-selected',k===collRub);x.querySelector('span').textContent=n[k][0]+'/'+n[k][1];a+=n[k][0];b+=n[k][1]});
   const pct=nuitPct();$('coll-total').textContent=Math.round(pct*100)+' %';const j=$('nuit-jauge');if(j){j.style.width=(pct*100)+'%';j.parentElement.title=nuitParts().map(([n,v])=>T(n)+' '+Math.round(v*100)+' %').join(' · ')}
   $('nuit-soleils').innerHTML='<span class="soleil"></span>'.repeat(Math.min(2,(S.nuit||0)+(S.aube?1:0)));
-  $('b-nuit').hidden=!(S.aube&&S.nuit<2);
+  $('b-nuit').hidden=!(S.aube&&S.nuit<2);$('b-ngp').hidden=!S.aube;
   const g=$('coll-grille');g.className='coll-grille c-'+collRub;let h='';
   if(collRub==='chats')h=RECRUES.map(r=>{const ok=S.coll.includes(r.id);return '<button class="ct'+(ok?'':' sil')+(collSel===r.id?' sel':'')+'" data-k="'+r.id+'" aria-label="'+(ok?r.nom:'???')+'"><canvas></canvas>'+(ok&&S.esc.slice(0,5).includes(r.id)?ICO_OK:'')+'</button>'}).join('');
   if(collRub==='armes')h=LEGS.map((l,i)=>{const ok=S.leg.includes(l.id),src=(ASSETS.leg||[])[i];return '<button class="ct'+(ok?'':' sil')+(collSel===l.id?' sel':'')+'" data-k="'+l.id+'" aria-label="'+(ok?l.nom:'???')+'">'+(src?'<img src="'+src.src+'" alt="">':'<span class="ct-q">?</span>')+(ok&&S.legEq===l.id?ICO_OK:'')+(ok?'<span class="ct-dps">'+ICO_DPS+fmt(dpsLeg(l))+'</span>':'')+'</button>'}).join('');
@@ -3241,6 +3268,7 @@ function demarre(data){
   requestAnimationFrame(boucle);
   if(!S.introVue)montreIntro();
   appliqueReve();if(S.reveBilan)setTimeout(montreBilanReve,500);
+  majBadgeNgp();if(S.ngpScene){S.ngpScene=false;sauve();setTimeout(()=>modale(T('Nouvelle partie +'),T('Mandarine se réveille dans la forêt, griffes neuves, gamelle vide. Le quartier est sauvé, mais la nuit a d’autres rues.'),'',T('En route')),600)}
   // Musique dès l'ouverture (sur Android ; un navigateur attendra le premier toucher)
   setTimeout(()=>{try{Son.init()}catch(e){}},300);
 }
