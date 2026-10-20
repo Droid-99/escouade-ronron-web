@@ -148,7 +148,7 @@ canvas#jeu{display:block;width:100%;aspect-ratio:16/9;max-width:100%}
 .soleil{display:inline-block;width:14px;height:14px;margin-left:5px;vertical-align:middle;border-radius:50%;background:#ffd36b;box-shadow:0 0 0 2px var(--nuit),0 0 0 3.5px #ffd36b}
 .ct .ct-m{position:absolute;left:0;right:0;bottom:3px;display:flex;justify-content:center;font:600 .62rem var(--f-texte);color:var(--encre);text-shadow:0 1px 2px #000}.ct .ct-m svg{width:16px;height:16px}
 .ct.lieu.maitrise{border-color:#ffd36b;border-style:solid}
-.segment.aide-onglets.coll-onglets{grid-template-columns:repeat(6,1fr)}
+.segment.aide-onglets.coll-onglets{grid-template-columns:repeat(5,1fr)}
 .coll-grille.c-recits{grid-template-columns:1fr}.coll-grille{grid-auto-rows:max-content}.ct.mus{overflow:visible;min-height:34px}.ct-nb{margin-left:auto;font-size:.7rem;color:var(--brume)}.ct-reste{grid-column:1/-1;margin:0 0 4px;padding:6px 10px;border:1px dashed var(--trait);border-radius:10px;font-size:.72rem;color:var(--brume)}.ct.mus.recit{display:block;text-align:left;font-weight:500;font-size:.72rem;min-height:0;line-height:1.3}.ct-titre{grid-column:1/-1;display:flex;align-items:center;gap:6px;margin:6px 0 0;font:600 .74rem var(--f-texte);color:var(--brume)}.ct-titre svg{width:14px;height:14px}
 .coll-detail .ligne{margin:4px 0}.coll-detail .ligne b{display:inline;margin-right:6px}
 #scene{z-index:75}.scene-boite{max-width:460px;padding:0;overflow:hidden;gap:0;text-align:left;display:block}
@@ -428,7 +428,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 11 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 20 oct. 2026</p></div>
     </div>
   </div>
 
@@ -532,7 +532,6 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <button data-cr="armes" aria-label="Armes légendaires"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h13l3-2h4v5h-4l-3-2H9l-2 5H4l1.5-5H2z" fill="currentColor"/><path d="M8 3l1 2.2 2.4.3-1.8 1.6.5 2.4L8 8.3 5.9 9.5l.5-2.4-1.8-1.6 2.4-.3z" fill="currentColor"/></svg><span></span></button>
       <button data-cr="lieux" aria-label="Lieux"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l6-10 4 6 3-4 7 8z" fill="currentColor"/><circle cx="17" cy="6" r="2.5" fill="currentColor"/></svg><span></span></button>
       <button data-cr="best" aria-label="Bestiaire"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11a7 7 0 0 1 14 0v9l-2.3-1.6L14.4 20 12 18.4 9.6 20l-2.3-1.6z" fill="currentColor"/></svg><span></span></button>
-      <button data-cr="recits" aria-label="Récits"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H9l-5 4z" fill="currentColor"/></svg><span></span></button>
       <button data-cr="mus" aria-label="Musiques"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg><span></span></button>
     </div>
     <div class="coll-grille" id="coll-grille"></div>
@@ -1184,10 +1183,9 @@ function nuitParts(){
   const m=S.maitrise.reduce((a,b)=>a+Math.min(b,C.MAITRISE),0)/(BIOMES.length*C.MAITRISE);
   const best=(TYPES_VUS.filter(t=>S.vus.includes(t)).length+BIOMES.filter((_,i)=>lieuVu(i)).length+S.bossVus.length)/(TYPES_VUS.length+2*BIOMES.length);
   const chats=S.coll.length/RECRUES.length;
-  const arcs=Object.values(S.recits.arcs).filter(n=>n>=3).length/5,scenes=RECITS_COLL.filter(r=>S.recits.vus.includes(r.id)).length/RECITS_COLL.length;
   // Les succès restent à part : la Nuit compte ce qui se collectionne (lieux, bestiaire, chats, histoires, légendaires)
   const legs=S.leg.length/LEGS.length;
-  return [['Lieux maîtrisés',m,.3],['Bestiaire',best,.2],['Chats',chats,.2],['Histoires et récits',(arcs+scenes)/2,.2],['Armes légendaires',legs,.1]];
+  return [['Lieux maîtrisés',m,.35],['Bestiaire',best,.25],['Chats',chats,.25],['Armes légendaires',legs,.15]];
 }
 const nuitPct=()=>{const x=nuitParts().reduce((a,[_,v,p])=>a+v*p,0);return x>=.9999?1:x};
 // Nouvelle Nuit : second cycle choisi après l'aube, créatures deux fois plus résistantes, une règle du Cauchemar permanente
@@ -1789,7 +1787,7 @@ function tue(e){
   if(e.elite){Son.pieces();flotte(e.x,centreY(e)-24,'Doré !','#ffd36b')}
   S.or+=g;gagneFen+=g;flotte(e.x,centreY(e)-14,'+'+fmt(g),'#ffb547');
   if(e.boss){
-    bossActif=false;S.stade++;S.kills=0;if(S.stade>S.rec)S.rec=S.stade;recupPerte();if(!D){finStadeMods();tenteVagueSpeciale();if(!VS)tenteScene()}
+    bossActif=false;S.stade++;S.kills=0;if(S.stade>S.rec)S.rec=S.stade;recupPerte();if(!D){finStadeMods();tenteVagueSpeciale()}
     if(S.stade>S.best){S.best=S.stade;verifRecrues()}
     const m=meteoDe(S.stade),rc=regleC(S.stade),nouvBoucle=rc&&S.stade>DEBUT_C&&(S.stade-DEBUT_C-1)%BOUCLE_C===0;if(nouvBoucle)toast('Cauchemar '+boucleC(S.stade)+' : '+rc.nom+', '+rc.info+'. '+nbRegles()+' règle'+(nbRegles()>1?'s':'')+' en jeu, éclats des boss x'+((1+boucleC(S.stade))*(1+.5*nbRegles())).toFixed(1).replace('.0',''),'cauchemar');succesVerif();Son.stade();vibre('fort');calcEquipe();majGrille();majEscouade();
   }else if(e.type!=='mini'&&!e.vs)S.kills++;
@@ -2463,8 +2461,6 @@ const SUCCES=[
  {id:'vague1',nom:'Dans la tempête',desc:'Tiens une vague spéciale jusqu’au bout',val:()=>S.stats.vagues||0,but:1,r:30},
  {id:'vague5',nom:'Chasseur de tempêtes',desc:'Tiens 5 vagues spéciales',val:()=>S.stats.vagues||0,but:5,r:100},
  {id:'vague8',nom:'Œil du cyclone',desc:'Vis les 8 vagues spéciales',val:()=>(S.stats.vsVues||[]).length,but:8,r:200},
- {id:'recit25',nom:'Veilleur',desc:'Vis 25 scènes avec tes chats',val:()=>S.recits.vus.length,but:25,r:40},
- {id:'arcs5',nom:'Mémoire de l’escouade',desc:'Termine les 5 histoires des chats',val:()=>Object.values(S.recits.arcs).filter(n=>n>=3).length,but:5,r:150},
  {id:'bestiaire',nom:'Bestiaire complet',desc:'Bats le boss de chacun des 20 lieux',val:()=>S.bossVus.length,but:20,r:100},
  {id:'cauch',nom:'Cauchemar',desc:'Dépasse le stade 50 et entre dans le Cauchemar',val:()=>S.best,but:51,r:100},
  {id:'aube',nom:'L’aube',desc:'Reconquiers tout le quartier (la Nuit à 100 %)',val:()=>Math.floor(nuitPct()*100),but:100,r:500}
@@ -2478,7 +2474,7 @@ function succesVerif(){
 }
 function majSucces(){
   const el=$('rub-succes');if(!el)return;
-  const ok=S.succes.length;
+  const ok=S.succes.filter(id=>SUCCES.some(x=>x.id===id)).length;
   el.innerHTML='<p class="succes-tete">'+ok+' / '+SUCCES.length+' obtenus</p>'+SUCCES.map(x=>{const f=S.succes.includes(x.id),v=x.val();
     const prog=f?'':(x.aff?x.aff(v)+' / '+x.affBut:fmt(Math.min(v,x.but))+' / '+fmt(x.but));
     return '<div class="ai'+(f?' fait':'')+'"><span class="ai-i"><span class="'+(f?'ai-ok':'ai-cad')+'">'+(f?'<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#1b1424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.2" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>')+'</span></span><div><b>'+x.nom+' · +'+x.r+' éclats</b><span>'+x.desc+(f?' (obtenu)':' · '+prog)+'</span></div></div>'}).join('');
@@ -2761,7 +2757,7 @@ function collCompte(){
 }
 function ouvreColl(rub){coll.hidden=false;collRub=rub||collRub;collSel=null;majColl();Son.clic()}
 function fermeColl(){coll.hidden=true}
-function majColl(){
+function majColl(){if(collRub==='recits')collRub='chats';
   const n=collCompte();let a=0,b=0;
   coll.querySelectorAll('[data-cr]').forEach(x=>{const k=x.dataset.cr;x.setAttribute('aria-selected',k===collRub);x.querySelector('span').textContent=n[k][0]+'/'+n[k][1];a+=n[k][0];b+=n[k][1]});
   const pct=nuitPct();$('coll-total').textContent=(pct>=.9999?100:Math.min(99,Math.floor(pct*100)))+' %';
