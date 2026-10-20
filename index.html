@@ -656,7 +656,7 @@ const EN={
  // Défis
  'Missions du jour':'Daily missions','Boss abattus':'Bosses slain','Ennemis dorés':'Golden enemies','Fusions d’armes':'Weapon merges','Fusions de familiers':'Familiar merges','Invocations':'Summons','Vagues spéciales':'Special waves','Défis joués':'Challenges played',
  'Mission accomplie':'Mission complete','Les 3 missions du jour':'All 3 daily missions','pelotes':'yarn','Boss de la semaine':'Boss of the week','Un boss géant qui avance lentement. Un essai d’une minute par jour, ses blessures restent : il tombe au bout de 5 ou 6 jours.':'A giant boss that advances slowly. One one-minute attempt per day; its wounds stay: it falls after 5 or 6 days.',
- 'Affronter':'Fight','Quai des brumes':'Misty Quay','Roi Crabe':'Crab King','Marché aux poissons fantôme':'Ghost Fish Market','Grande Lotte':'Great Anglerfish','Phare hanté':'Haunted Lighthouse','Mouette Hurlante':'Howling Gull','Chantier naval':'Shipyard','Capitaine Squelette':'Skeleton Captain','Cimetière des bateaux':'Boat Graveyard','Kraken Gluant':'Sticky Kraken','Un boss géant qui avance lentement':'A giant boss that advances slowly','Il faudra continuer demain':'To be continued tomorrow','nouveau boss demain':'new boss tomorrow','Jour':'Day','Tu reprends à ta vague record, les précédentes sont comptées.':'You resume at your best wave; earlier waves are counted.','Repousse des vagues de plus en plus fortes. Trois créatures qui passent et la chasse s’arrête. Tu reprends à ta vague record, les précédentes sont comptées.':'Hold off ever stronger waves. Three creatures get through and the hunt is over. You resume at your best wave; earlier waves are counted.','1 essai par jour':'1 attempt per day','Abattu':'Slain','nouveau boss dans':'new boss in','j':'d','Vie':'HP','reste':'left','essai disponible':'attempt ready','Boss de la semaine abattu !':'Boss of the week slain!','Le boss de la semaine tient encore':'The boss of the week still stands',
+ 'Affronter':'Fight','Quai des brumes':'Misty Quay','Roi Crabe':'Crab King','Marché aux poissons fantôme':'Ghost Fish Market','Grande Lotte':'Great Anglerfish','Phare hanté':'Haunted Lighthouse','Mouette Hurlante':'Howling Gull','Chantier naval':'Shipyard','Capitaine Squelette':'Skeleton Captain','Cimetière des bateaux':'Boat Graveyard','Kraken Gluant':'Sticky Kraken','Un boss géant qui avance lentement':'A giant boss that advances slowly','Il faudra continuer demain':'To be continued tomorrow','Le boss s’apprête à frapper':'The boss is about to strike','Il se protège !':'It shields itself!','nouveau boss demain':'new boss tomorrow','Jour':'Day','Tu reprends à ta vague record, les précédentes sont comptées.':'You resume at your best wave; earlier waves are counted.','Repousse des vagues de plus en plus fortes. Trois créatures qui passent et la chasse s’arrête. Tu reprends à ta vague record, les précédentes sont comptées.':'Hold off ever stronger waves. Three creatures get through and the hunt is over. You resume at your best wave; earlier waves are counted.','1 essai par jour':'1 attempt per day','Abattu':'Slain','nouveau boss dans':'new boss in','j':'d','Vie':'HP','reste':'left','essai disponible':'attempt ready','Boss de la semaine abattu !':'Boss of the week slain!','Le boss de la semaine tient encore':'The boss of the week still stands',
  'Durée de chasse':'Hunting time','Stades':'Stages','amélioration Bonus abordable':'affordable upgrade','améliorations Bonus abordables':'affordable upgrades',
  'Duel de boss':'Boss duel','Chasse aux vagues':'Wave hunt','Mine de cristaux':'Crystal mine','Potager hanté':'Haunted garden',
  'Bats un boss en 1 minute':'Beat a boss in 1 minute','Bats un boss en 1 minute. Ton entraînement ne compte pas, seules tes armes, recrues et familiers comptent.':'Beat a boss in 1 minute. Your training does not count, only your weapons, recruits and familiars.',
@@ -809,6 +809,7 @@ const ENP=[
  [R('vague n : n\\+2 éclats'),()=>'wave n: n+2 shards'],
  [R('Record : # vagues?'),m=>'Best: '+m[1]+pl(m[1],' wave',' waves')],
  [R('Record : # éclats'),m=>'Best: '+m[1]+' shards'],
+ [R('Ton escouade se replie, il faudra continuer demain\\. Dégâts du jour : # % de sa vie\\. Il lui reste # %\\.'),m=>'Your squad falls back; to be continued tomorrow. Today\'s damage: '+m[1]+'% of its HP. It has '+m[2]+'% left.'],
  [R('Dégâts du jour : # % de sa vie\\. Il lui reste # %\\.'),m=>'Today\'s damage: '+m[1]+'% of its HP. It has '+m[2]+'% left.'],
  [R('\\+# pelotes\\.(?: Familier (.+) de grade (\\S+)\\.)? Un nouveau boss arrive demain\\.'),m=>'+'+m[1]+' yarn.'+(m[2]?' Familiar '+trS(m[2])+', grade '+m[3]+'.':'')+' A new boss arrives tomorrow.'],
  [R('Mission accomplie : (.+) \\(\\+# éclats\\)'),m=>'Mission complete: '+trS(m[1])+' (+'+m[2]+' shards)'],
@@ -1774,6 +1775,7 @@ function frappe(e,dmg,perk,critOk,leg){
   if(e.trait==='blinde')d*=.6;
   if(e.kind==='creature'&&protegePar(e))d*=.5;
   if(leg==='crit'||critOk&&Math.random()<critChance()){d*=critMult();if(fx.length<40)fx.push({k:'crit',x:e.x-8+(Math.random()-.5)*10,y:centreY(e)-6+(Math.random()-.5)*14,t:0,vie:.28})}
+  if(D&&D.id==='semaine'&&e.boss)d=carapaceBs(e,d);
   e.pv-=d;
   if(leg&&e.kind==='creature'){
     if(leg==='lent')e.lent=1.2;
@@ -1802,7 +1804,7 @@ function tue(e){
   if(e.type==='diviseur'&&!D||e.type==='diviseur'&&D&&D.id==='chasse'){
     for(const d of[-10,10]){const m=e.max*.3;enn.push(nouvelEnn({bi:e.bi,type:'mini',sc:.6,x:e.x+d,y:e.vol?e.y:Math.min(H-14,Math.max(SOL+18,e.y+d)),pv:m,max:m,v:e.v*1.6}))}
   }
-  if(D){if(D.id==='chasse')D.tues++;if(D.id==='boss'&&e.boss)finDefi(true);else if(D.id==='semaine'&&e.boss)finDefi(D.plancher>0?'cap':true);return}
+  if(D){if(D.id==='chasse')D.tues++;if(D.id==='boss'&&e.boss)finDefi(true);else if(D.id==='semaine'&&e.boss)finDefi(true);return}
   let g=orEnn()*TYPES_ENN[e.type].or*(e.elite?8:1);
   if(e.boss){g*=C.BOSS_M*.6*(1+perkSum('bossOr'));const ec=eclBoss();S.ecl+=ec;flotte(e.x,centreY(e)-24,'+'+ec+' éclats','#9fd3ff');succesStat('boss');
     const bi=biomeIdx(S.stade);if(!S.bossVus.includes(bi))S.bossVus.push(bi);
@@ -2134,7 +2136,8 @@ function lanceDefi(id){
 const gainChasse=v=>v>0?2*v+v*(v+1)/2:0;
 function nouvelleVague(){D.vague++;D.aSpawn=5+D.vague;D.spT=.5;D.pvV=pvA(Math.max(1,S.best-3))*.6*1.2**(D.vague-1)}
 function majDefi(dt){
-  if(D.id==='semaine'){const b=enn.find(e=>e.boss);if(b&&D.plancher>0&&b.pv<=D.plancher){b.pv=D.plancher;finDefi('cap');return}if(D.t-dt<=0){finDefi('temps');return}}
+  // Boss de la semaine : l'essai s'arrête quand il atteint l'escouade (au bout d'environ une minute)
+  if(D.id==='semaine'){const b=enn.find(e=>e.boss);if(!b||b.x<=140.5||D.t<-30){finDefi('arrive');return}}
   if(D.id!=='chasse')D.t-=dt;
   if(D.id==='chasse'){
     if(D.coeurs<=0){finDefi(false);return}
@@ -2159,14 +2162,14 @@ function finDefi(ok){
   if(d.id==='boss'){if(ok){gain=20+10*d.niv;S.defis.niv.boss++;titre='Boss vaincu !';texte='Duel niveau '+d.niv+' réussi. Le prochain sera plus coriace.'}else{titre='Le boss a tenu bon';texte='Améliore tes armes, tes recrues ou tes familiers, puis retente.'}}
   if(d.id==='potager'){if(ok){gain=20+8*d.niv;S.defis.niv.potager++;titre='Potager nettoyé !';texte='Toutes les citrouilles sont tombées.'}else{titre='Temps écoulé';texte='Il restait des citrouilles.'}}
   if(d.id==='chasse'){const v=d.vague-1;gain=gainChasse(v);titre='Fin de la chasse';texte='Tu as tenu '+v+' vague'+(v>1?'s':'')+'.'+(v>S.defis.rec.chasse?' Nouveau record !':' Record : '+S.defis.rec.chasse+'.');S.defis.rec.chasse=Math.max(S.defis.rec.chasse,v)}
-  if(d.id==='semaine'){const q=bsEtat();let av=d.pv0,fin=ok===true?0:Math.max(d.plancher,bsB?bsB.pv:d.plancher);
-    // Étalonnage au premier essai complet : si le plafond n'est pas atteint, sa vie est recalée pour que la journée vaille BS_J1
-    if(!q.calib&&ok!==false){if(ok!=='cap'){const dm=Math.max(1,av-fin);q.max=dm/BS_J1;av=q.max;fin=q.max*(1-BS_J1)}q.calib=true}
+  if(d.id==='semaine'){const q=bsEtat();let av=d.pv0,fin=ok===true?0:Math.max(1,bsB?bsB.pv:d.pv0);
+    // Étalonnage au premier essai mené jusqu'au bout : sa vie est recalée pour que cette journée vaille BS_J1
+    if(!q.calib&&ok==='arrive'){const dm=Math.max(1,av-fin);q.max=dm/BS_J1;av=q.max;fin=q.max*(1-BS_J1);q.calib=true}
     q.pv=fin;q.jours++;const pct=Math.round(100*(av-fin)/q.max),reste=Math.ceil(100*fin/q.max);
     if(ok===true){q.tue=true;q.tueJour=jourReve();gain=150;const p=Math.max(10,Math.round(gainPel()*.6));S.pel+=p;const j=S.pets.indexOf(null),g=Math.min(GRADES.length-1,Math.max(3,gradeInvoc()+1));let tx='';
       if(j>=0){S.pets[j]={e:especeInvoc(),g};derPet=j;tx=' Familier '+ESPECES[S.pets[j].e].nom+' de grade '+GRADES[g]+'.'}
       titre='Boss de la semaine abattu !';texte='+'+p+' pelotes.'+tx+' Un nouveau boss arrive demain.'}
-    else{gain=25;titre='Il faudra continuer demain';texte='Dégâts du jour : '+pct+' % de sa vie. Il lui reste '+reste+' %.'}}
+    else{gain=25;titre='Le boss s’apprête à frapper';texte='Ton escouade se replie, il faudra continuer demain. Dégâts du jour : '+pct+' % de sa vie. Il lui reste '+reste+' %.'}}
   if(d.id==='mine'){gain=d.gain;titre='Mine fermée';texte='Cristaux extraits en une minute.'+(gain>S.defis.rec.mine?' Nouveau record !':' Record : '+S.defis.rec.mine+'.');S.defis.rec.mine=Math.max(S.defis.rec.mine,gain)}
   S.ecl+=gain;if(gain)Son.pieces();verifRecrues();
   modale(titre,texte,gain?'+'+gain+' éclats de lune':'','Continuer');
@@ -2383,13 +2386,18 @@ $('b-invoque').onclick=()=>{
 // ================= Interface : défis =================
 // ================= Boss de la semaine =================
 // Un boss géant à user jour après jour : un essai d'une minute par jour, ses blessures restent.
-// Chaque essai est plafonné à BS_CAP de sa vie, et le premier sert d'étalonnage (dégâts du jour = BS_J1 de sa vie),
-// si bien qu'il tombe au 5e ou 6e jour. Le suivant arrive le lendemain de sa chute.
-const BS_CAP=.21,BS_J1=.18;
+// Le premier essai sert d'étalonnage (dégâts du jour = BS_J1 de sa vie). Ensuite, au-delà de BS_JOUR de sa vie dans la journée,
+// il se protège (carapace : dégâts très réduits) sans que l'essai s'arrête. Il tombe ainsi au 5e ou 6e jour.
+const BS_J1=.17,BS_JOUR=.2,BS_CARAP=.06;
+function carapaceBs(e,d){
+  if(D.seuil==null||D.seuil<=0)return d;const libre=Math.max(0,e.pv-D.seuil);if(d<=libre)return d;
+  if(!D.carap){D.carap=1;flotte(e.x,centreY(e)-40,'Il se protège !','#c79bff');Son.boss()}
+  const r=libre+(d-libre)*BS_CARAP;return Math.min(r,e.pv-1);
+}
 function bsEtat(){
   const j=jourReve();
   if(!S.bs||S.bs.sem!==undefined||(S.bs.tue&&S.bs.tueJour!==j)){
-    const max=Math.max(pvA(S.stade)*C.BOSS_M*2,dpsTotal()*1.25*C.DEFI_T/BS_J1);
+    const max=Math.max(pvA(S.stade)*C.BOSS_M*2,dpsTotal()*1.5*C.DEFI_T/BS_J1);
     S.bs={n:((S.bs&&S.bs.n)||0)+1,max,pv:max,jour:'',jours:0,calib:false,tue:false,tueJour:'',bi:Math.floor(Math.random()*(lieuMax()+1))}}
   return S.bs;
 }
@@ -2398,8 +2406,9 @@ function lanceBs(){
   if(D||S.best<DEF_BS.deb||!bsDispo())return;const q=bsEtat();
   enPause=false;VS=null;majVsOverlay();q.jour=jourReve();mq('defi');
   enn=[];balles=[];bossActif=false;
-  const pl=q.calib?q.pv-BS_CAP*q.max:q.max*(1-BS_CAP);
-  D={id:'semaine',t:C.DEFI_T,gain:0,bi:q.bi,pv0:q.pv,plancher:pl<=.001*q.max?0:pl};
+  // Seuil du jour : au-delà, carapace. Au premier essai, marge large ; s'il reste moins qu'une journée, il peut tomber.
+  const sl=q.calib?q.pv-BS_JOUR*q.max:q.max*.55;
+  D={id:'semaine',t:C.DEFI_T,gain:0,bi:q.bi,pv0:q.pv,seuil:sl<=.02*q.max?0:sl};
   // Il entre déjà visible et avance lentement : il n'atteint l'escouade qu'à la fin de la minute
   enn.push(nouvelEnn({bi:q.bi,boss:true,sc:1.35,x:W-30,y:voieY(2)+8,pv:q.pv,max:q.max,v:(W-30-140)/(C.DEFI_T-2)}));
   calcEquipe();majHud();majDefis();majPause();Son.boss();
