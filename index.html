@@ -428,7 +428,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 20 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 21 oct. 2026</p></div>
     </div>
   </div>
 
@@ -1114,7 +1114,7 @@ const LARG_ARME={pistol:18,rifle:31,shotgun:29,smg:25,sniper:33};
 const COUL=['#e8e1d6','#9fd3ff','#7fe0c0','#ffd36b','#ff9e7a','#ff86ad','#c79bff','#6be3ff'];
 const SIL={pistol:'M8 5h30v7H24l-3 10h-8l2-10H8z',rifle:'M2 8h50v5H32l-2 4h-6l1-4H16l-7 7H2l5-7H2z',shotgun:'M2 7h46v5H32v3h-7v-3H17l-8 9H3l6-9H2z',smg:'M8 6h42v6H38v9h-7v-9H24l-3 7h-7l3-7H8z',sniper:'M0 10h58v3H34l-2 5h-5l1-5H18l-9 7H2l6-7H0zM22 4h14v4H22z'};
 const armeNom=t=>ARMES[armeBase(t)-1][0]+(armeEtoiles(t)?' '+'★'.repeat(armeEtoiles(t)):'');
-const armeType=t=>ARMES[armeBase(t)-1][1];
+const armeType=t=>(ARMES[armeBase(Math.max(1,t||1))-1]||ARMES[0])[1];
 const armeTrait=t=>ARMES[armeBase(t)-1][2]||null;
 const armeCoul=t=>COUL[(t-1)%COUL.length];
 const imgArme=t=>IM.armes[Math.min(armeBase(t),IM.armes.length)-1];
@@ -2098,15 +2098,23 @@ $('v-meteo').addEventListener('click',()=>{
 $('effets').addEventListener('click',e=>{const b=e.target.closest('.eff');if(b){e.stopPropagation();bulleEffet(+b.dataset.i,b)}});
 
 let avant=0;
-function boucle(t){if(![1,4,8,12].includes(S.vitesse)){S.vitesse=4;majVitesse()}if(S.vitesse>=8&&!x6Ok()){S.vitesse=4;majVitesse()}if(S.vitesse===12&&!S.ngp){S.vitesse=8;majVitesse()}const dt=Math.min(.1,(t-avant)/1000||0),v=S.vitesse||1;avant=t;
-  if(enScene){dessine(0);requestAnimationFrame(boucle);return}
+function boucle0(t){if(![1,4,8,12].includes(S.vitesse)){S.vitesse=4;majVitesse()}if(S.vitesse>=8&&!x6Ok()){S.vitesse=4;majVitesse()}if(S.vitesse===12&&!S.ngp){S.vitesse=8;majVitesse()}const dt=Math.min(.1,(t-avant)/1000||0),v=S.vitesse||1;avant=t;
+  if(enScene){dessine(0);return}
   if(!enPause&&!D&&joueurLa()){S.recits.tActif+=dt;S.stats.tJeu=(S.stats.tJeu||0)+dt}
   if(!enPause)majLegTemps(0,dt);
   majRetraite(dt);
   // En repli : la scène continue tant que l'escouade s'en va (balles en vol, ennemis qui avancent), puis seule la météo bouge
   const simule=!enPause||RET.mode==='sortie';
   if(simule)for(let i=0;i<(enPause?1:v);i++)maj(dt);else tps+=dt;
-  dessine(enPause&&!simule?dt:dt*(enPause?1:v));dessineVsOverlay(dt);requestAnimationFrame(boucle)}
+  dessine(enPause&&!simule?dt:dt*(enPause?1:v));dessineVsOverlay(dt)}
+// La boucle ne doit jamais s'arrêter : une erreur dans une image est notée, l'escouade est resynchronisée et le jeu continue
+let nbErr=0;
+function boucle(t){
+  try{boucle0(t)}catch(e){
+    nbErr++;try{const l=JSON.parse(localStorage.getItem('ronron-erreurs')||'[]');l.push([new Date().toISOString(),String(e&&e.stack||e).slice(0,400)]);localStorage.setItem('ronron-erreurs',JSON.stringify(l.slice(-8)))}catch(_){}
+    try{calcEquipe();majGrille()}catch(_){}
+  }finally{requestAnimationFrame(boucle)}
+}
 // Vitesses x1, x4 et x8 ; x8 seulement pour rejouer des stades déjà franchis (sous le record), jamais en défi
 const x6Ok=()=>!!D||S.stade<S.best;
 // x12 réservé à la Nouvelle partie + (et, comme x8, seulement sous le record)
@@ -2185,8 +2193,7 @@ function fusionTout(silence){
   let fait=0,encore=true;
   while(encore){encore=false;const niv=[...new Set(S.grille.filter(t=>t))].sort((a,b)=>a-b);
     for(const t of niv){const idx=S.grille.map((v,i)=>v===t?i:-1).filter(i=>i>=0);if(idx.length>=2&&!(silence&&gardePaire(t))){S.grille[idx[0]]=t+1;S.grille[idx[1]]=0;fait++;encore=true;break}}}
-  if(fait)mq('fusA',fait);
-  if(fait){Son.fusion(Math.max(...S.grille));if(!silence)vibre('leger');sel=-1;majGrille()}
+  if(fait){Son.fusion(Math.max(...S.grille));if(!silence)vibre('leger');sel=-1;majGrille();mq('fusA',fait)}
   if(!silence)toast(fait?fait+' fusion'+(fait>1?'s':''):'Aucune paire à fusionner',fait?'info':'alerte');
 }
 function acheter(silence){
@@ -2776,7 +2783,7 @@ function mq(t,n=1){
   if(typeof S==='undefined'||!S||S.reve)return;const q=mqEtat();let fini=false;
   for(const m of q.m)if(m.t===t&&m.n<m.but){m.n=Math.min(m.but,m.n+n);if(m.n>=m.but){S.ecl+=MQ_ECL;fini=true;toast(T('Mission accomplie')+' : '+T(MISSIONS.find(x=>x.t===t).nom)+' (+'+MQ_ECL+' '+T('éclats')+')','stade')}}
   if(fini&&!q.bonus&&q.m.every(m=>m.n>=m.but)){q.bonus=true;const p=mqBonusPel();S.pel+=p;toast(T('Les 3 missions du jour')+' : +'+p+' '+T('pelotes'),'stade');Son.stade()}
-  if(fini){Son.pieces();majHud();if(!$('p-def').hidden)majDefis()}
+  if(fini){Son.pieces();setTimeout(()=>{majHud();if(!$('p-def').hidden)majDefis()},0)}
 }
 const MQ_IC={boss:'<svg viewBox="0 0 24 24"><path d="M3 18h18l-2-10-4 4-3-7-3 7-4-4z" fill="currentColor"/></svg>',
  dore:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M12 7v10M9 9.5h4.5a2 2 0 010 4H10a2 2 0 000 4h5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
