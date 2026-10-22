@@ -428,7 +428,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 21 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 22 oct. 2026</p></div>
     </div>
   </div>
 
@@ -2170,7 +2170,7 @@ function finDefi(ok){
   if(d.id==='boss'){if(ok){gain=20+10*d.niv;S.defis.niv.boss++;titre='Boss vaincu !';texte='Duel niveau '+d.niv+' réussi. Le prochain sera plus coriace.'}else{titre='Le boss a tenu bon';texte='Améliore tes armes, tes recrues ou tes familiers, puis retente.'}}
   if(d.id==='potager'){if(ok){gain=20+8*d.niv;S.defis.niv.potager++;titre='Potager nettoyé !';texte='Toutes les citrouilles sont tombées.'}else{titre='Temps écoulé';texte='Il restait des citrouilles.'}}
   if(d.id==='chasse'){const v=d.vague-1;gain=gainChasse(v);titre='Fin de la chasse';texte='Tu as tenu '+v+' vague'+(v>1?'s':'')+'.'+(v>S.defis.rec.chasse?' Nouveau record !':' Record : '+S.defis.rec.chasse+'.');S.defis.rec.chasse=Math.max(S.defis.rec.chasse,v)}
-  if(d.id==='semaine'){const q=bsEtat();let av=d.pv0,fin=ok===true?0:Math.max(1,bsB?bsB.pv:d.pv0);
+  if(d.id==='semaine'){const q=bsEtat();let av=d.pv0,fin=ok===true?0:Math.max(1,bsB&&isFinite(bsB.pv)?bsB.pv:d.pv0);
     // Étalonnage au premier essai mené jusqu'au bout : sa vie est recalée pour que cette journée vaille BS_J1
     if(!q.calib&&ok==='arrive'){const dm=Math.max(1,av-fin);q.max=dm/BS_J1;av=q.max;fin=q.max*(1-BS_J1);q.calib=true}
     q.pv=fin;q.jours++;const pct=Math.round(100*(av-fin)/q.max),reste=Math.ceil(100*fin/q.max);
@@ -2397,20 +2397,23 @@ $('b-invoque').onclick=()=>{
 // il se protège (carapace : dégâts très réduits) sans que l'essai s'arrête. Il tombe ainsi au 5e ou 6e jour.
 const BS_J1=.17,BS_JOUR=.2,BS_CARAP=.06;
 function carapaceBs(e,d){
-  if(D.seuil==null||D.seuil<=0)return d;const libre=Math.max(0,e.pv-D.seuil);if(d<=libre)return d;
+  if(!isFinite(e.pv)){e.pv=isFinite(D.pv0)?D.pv0:e.max}
+  if(!(D.seuil>0))return d;const libre=Math.max(0,e.pv-D.seuil);if(d<=libre)return d;
   if(!D.carap){D.carap=1;flotte(e.x,centreY(e)-40,'Il se protège !','#c79bff');Son.boss()}
-  const r=libre+(d-libre)*BS_CARAP;return Math.min(r,e.pv-1);
+  const r=libre+(d-libre)*BS_CARAP;return isFinite(r)?Math.min(r,e.pv-1):0;
 }
 function bsEtat(){
   const j=jourReve();
   if(!S.bs||S.bs.sem!==undefined||(S.bs.tue&&S.bs.tueJour!==j)){
-    const max=Math.max(pvA(S.stade)*C.BOSS_M*2,dpsTotal()*1.5*C.DEFI_T/BS_J1);
+    const base=pvA(S.stade)*C.BOSS_M*2,dp=dpsTotal(),max=isFinite(dp)&&dp>0?Math.max(base,dp*1.5*C.DEFI_T/BS_J1):base;
     S.bs={n:((S.bs&&S.bs.n)||0)+1,max,pv:max,jour:'',jours:0,calib:false,tue:false,tueJour:'',bi:Math.floor(Math.random()*(lieuMax()+1))}}
   return S.bs;
 }
 const bsDispo=()=>{const q=bsEtat();return !q.tue&&q.jour!==jourReve()};
 function lanceBs(){
   if(D||S.best<DEF_BS.deb||!bsDispo())return;const q=bsEtat();
+  // Sauvegarde abîmée (vie non numérique) : le boss est remis d'aplomb plutôt que de rester vide
+  if(!(isFinite(q.max)&&q.max>0)){delete S.bs;return lanceBs()}if(!(isFinite(q.pv)&&q.pv>0&&q.pv<=q.max))q.pv=q.max;
   enPause=false;VS=null;majVsOverlay();q.jour=jourReve();mq('defi');
   enn=[];balles=[];bossActif=false;
   // Seuil du jour : au-delà, carapace. Au premier essai, marge large ; s'il reste moins qu'une journée, il peut tomber.
@@ -2481,7 +2484,7 @@ function majHud(){majEffets();if(S.reve)reveEquipe();
   if(D){info.hidden=true;
     const def=D.id==='semaine'?DEF_BS:DEFIS.find(x=>x.id===D.id);$('v-stade').textContent=def.nom;$('v-biome').textContent=D.id==='semaine'?'1 essai par jour':D.niv?'niveau '+D.niv:D.id==='chasse'?'vague '+D.vague:'gain '+D.gain+' éclats';
     const pu=$('v-meteo');pu.classList.remove('boss');pu.dataset.h='';pu.textContent=def.desc.split('.')[0];
-    if(D.id==='boss'||D.id==='semaine'){const b=enn.find(e=>e.boss);r.style.width=(b?100*b.pv/b.max:0)+'%';$('v-prog').textContent=Math.ceil(D.t)+' s'}
+    if(D.id==='boss'||D.id==='semaine'){const b=enn.find(e=>e.boss);const f=b&&b.max>0?b.pv/b.max:0;r.style.width=(isFinite(f)?Math.max(0,Math.min(1,f))*100:100)+'%';$('v-prog').textContent=Math.ceil(D.t)+' s'}
     else if(D.id==='chasse'){r.style.width=(100*D.coeurs/3)+'%';$('v-prog').textContent=D.coeurs+' cœur'+(D.coeurs>1?'s':'')}
     else if(D.id==='potager'){r.style.width=(100*(1-enn.length/D.total))+'%';$('v-prog').textContent=(D.total-enn.length)+' / '+D.total+' · '+Math.ceil(D.t)+' s'}
     else{r.style.width=(100*D.t/C.DEFI_T)+'%';$('v-prog').textContent=Math.ceil(D.t)+' s'}
@@ -3346,17 +3349,18 @@ function armeDeDepart(){if(!S.grille.some(t=>t)&&S.or<coutAchat())S.grille[0]=ni
 // Gains hors ligne : on simule l'escouade actuelle (sa vraie puissance) à mi-régime.
 // Elle avance de stade tant qu'elle peut battre les boss, sans jamais dépasser le record, puis chasse sur place.
 function simuleHorsLigne(sec){
-  calcEquipe();const dps=dpsTotal();if(!(dps>0))return null;
+  // Dégâts réels mesurés en jeu : environ 1,25 fois la puissance affichée (critiques, perks, familiers)
+  calcEquipe();const dps=dpsTotal()*1.25;if(!(dps>0))return null;
   let t=sec*C.OFF_EFF,s=S.stade,or=0,boss=0;const d0=s,mo=multOr();
   // Sans le joueur, l'escouade s'arrête deux stades avant celui où elle se ferait submerger (les créatures s'entassent
   // quand elle met plus de 1,2 s à en abattre une), et deux stades avant une chute en attente : le joueur a le temps
   // d'améliorer l'escouade, et les pelotes laissées au stade de la chute se récupèrent en jouant. Jamais au-delà du record.
-  let plafond=S.best;for(let k=s;k<=S.best;k++)if(pvA(k)*1.1/dps>=1.2){plafond=k-2;break}
+  let plafond=S.best;for(let k=s;k<=S.best;k++)if(pvA(k)*1.1/dps>=1.5){plafond=k-1;break}
   if(S.perte)plafond=Math.min(plafond,S.perte.stade-2);
   const orA=k=>C.OR0*C.ORG**(k-1)*mo;
   while(t>0){
     const tKill=Math.max(pvA(s)*1.1/dps,.8),bossHP=pvA(s)*1.2*C.BOSS_M,tBoss=bossHP/dps;
-    const peutPasser=s<plafond&&tBoss<=C.BOSS_T*.85,tStade=C.KILLS*tKill+tBoss;
+    const peutPasser=s<plafond&&tBoss<=C.BOSS_T*.95,tStade=C.KILLS*tKill+tBoss;
     // bloqué : cycles de 20 créatures puis un boss qui file (ou qu'on ne bat pas pour ne pas dépasser le record)
     if(!peutPasser){or+=t*C.KILLS*orA(s)/(C.KILLS*tKill+Math.min(tBoss,C.BOSS_T));break}
     if(tStade>t){or+=t/tKill*orA(s);break}
@@ -3372,6 +3376,7 @@ function horsLigne(){
     r.ec=eclBoss()*r.boss;S.ecl+=r.ec;
     // Les boss battus hors ligne comptent, mais le dernier boss d'un succès doit être battu en jouant
     {const seuil=Math.min(...SUCCES.filter(x=>x.id.startsWith('boss')&&!S.succes.includes(x.id)).map(x=>x.but),Infinity);S.stats.boss=Math.min(S.stats.boss+r.boss,seuil-1)}calcEquipe();majGrille();majEscouade()}
+  if(S.vitesse!==1){S.vitesse=1;majVitesse()}
   const d=Math.min(sec,cap),h=Math.floor(d/3600),m=Math.floor(d%3600/60);
   const phrase='Ton escouade a chassé pendant '+(h?h+' h ':'')+m+' min'+(sec>cap?' (plafond atteint)':'')+(r.stade>r.depart?' et avancé du stade '+r.depart+' au stade '+r.stade:'')+'.';
   modale('Bon retour !','','+'+fmt(r.or)+' croquettes','Récupérer');$('m-texte').innerHTML='<span class="rc-p">'+phrase+'</span>'+recapHorsLigne(h,m,sec>cap,r);
