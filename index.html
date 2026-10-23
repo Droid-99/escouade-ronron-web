@@ -428,7 +428,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 22 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 23 oct. 2026</p></div>
     </div>
   </div>
 
@@ -2393,14 +2393,18 @@ $('b-invoque').onclick=()=>{
 // ================= Interface : défis =================
 // ================= Boss de la semaine =================
 // Un boss géant à user jour après jour : un essai d'une minute par jour, ses blessures restent.
-// Le premier essai sert d'étalonnage (dégâts du jour = BS_J1 de sa vie). Ensuite, au-delà de BS_JOUR de sa vie dans la journée,
-// il se protège (carapace : dégâts très réduits) sans que l'essai s'arrête. Il tombe ainsi au 5e ou 6e jour.
-const BS_J1=.17,BS_JOUR=.2,BS_CARAP=.06;
+// Le premier essai sert d'étalonnage (dégâts du jour = BS_J1 de sa vie). Chaque jour, au-delà de BS_JOUR de sa vie
+// il se protège (carapace : dégâts très réduits), et il ne perd jamais plus de BS_MAX en une journée, quelle que soit ta
+// puissance. Il tombe ainsi au 5e ou 6e jour, même si l'escouade progresse beaucoup pendant la semaine.
+const BS_J1=.17,BS_JOUR=.18,BS_MAX=.23,BS_CARAP=.06;
 function carapaceBs(e,d){
   if(!isFinite(e.pv)){e.pv=isFinite(D.pv0)?D.pv0:e.max}
-  if(!(D.seuil>0))return d;const libre=Math.max(0,e.pv-D.seuil);if(d<=libre)return d;
-  if(!D.carap){D.carap=1;flotte(e.x,centreY(e)-40,'Il se protège !','#c79bff');Son.boss()}
-  const r=libre+(d-libre)*BS_CARAP;return isFinite(r)?Math.min(r,e.pv-1):0;
+  let r=d;
+  if(D.seuil>0){const libre=Math.max(0,e.pv-D.seuil);if(d>libre){
+    if(!D.carap){D.carap=1;flotte(e.x,centreY(e)-40,'Il se protège !','#c79bff');Son.boss()}
+    r=libre+(d-libre)*BS_CARAP}}
+  if(D.dur>0)r=Math.min(r,Math.max(0,e.pv-D.dur));
+  return isFinite(r)?r:0;
 }
 function bsEtat(){
   const j=jourReve();
@@ -2417,8 +2421,10 @@ function lanceBs(){
   enPause=false;VS=null;majVsOverlay();q.jour=jourReve();mq('defi');
   enn=[];balles=[];bossActif=false;
   // Seuil du jour : au-delà, carapace. Au premier essai, marge large ; s'il reste moins qu'une journée, il peut tomber.
-  const sl=q.calib?q.pv-BS_JOUR*q.max:q.max*.55;
-  D={id:'semaine',t:C.DEFI_T,gain:0,bi:q.bi,pv0:q.pv,seuil:sl<=.02*q.max?0:sl};
+  // Premier essai : sa vie provisoire est fixée maintenant, d'après ta puissance du moment (pas quand la carte s'est affichée)
+  if(!q.calib){const base=pvA(S.stade)*C.BOSS_M*2,dp=dpsTotal();q.max=q.pv=isFinite(dp)&&dp>0?Math.max(base,dp*1.5*C.DEFI_T/BS_J1):base}
+  const sl=q.calib?q.pv-BS_JOUR*q.max:q.max*.55,du=q.calib?q.pv-BS_MAX*q.max:q.max*.3;
+  D={id:'semaine',t:C.DEFI_T,gain:0,bi:q.bi,pv0:q.pv,seuil:sl<=.02*q.max?0:sl,dur:du<=.005*q.max?0:du};
   // Il entre déjà visible et avance lentement : il n'atteint l'escouade qu'à la fin de la minute
   enn.push(nouvelEnn({bi:q.bi,boss:true,sc:1.35,x:W-30,y:voieY(2)+8,pv:q.pv,max:q.max,v:(W-30-140)/(C.DEFI_T-2)}));
   calcEquipe();majHud();majDefis();majPause();Son.boss();
@@ -2469,7 +2475,7 @@ $('b-ren').onclick=()=>{
   const g=gainPel();if(!g||D)return;
   if(Date.now()>renConfirm){renConfirm=Date.now()+4000;$('b-ren').textContent='Toucher encore pour confirmer';return}
   renConfirm=0;
-  const garde={pel:S.pel+g,pelTot:S.pelTot+g,rb:S.rb,nbRen:S.nbRen+1,best:S.best,coll:S.coll,esc:S.esc,vus:S.vus,pets:S.pets,petEq:S.petEq,ecl:S.ecl,defis:S.defis,auto:S.auto,son:S.son,vitesse:S.vitesse,reg:S.reg,succes:S.succes,stats:S.stats,introVue:S.introVue,lang:S.lang,leg:S.leg,legEq:S.legEq,legRech:S.legRech,bossVus:S.bossVus,recits:S.recits,maitrise:S.maitrise,nuit:S.nuit,aube:S.aube};
+  const garde={pel:S.pel+g,pelTot:S.pelTot+g,rb:S.rb,nbRen:S.nbRen+1,best:S.best,coll:S.coll,esc:S.esc,vus:S.vus,pets:S.pets,petEq:S.petEq,ecl:S.ecl,defis:S.defis,auto:S.auto,son:S.son,vitesse:S.vitesse,reg:S.reg,succes:S.succes,stats:S.stats,introVue:S.introVue,lang:S.lang,leg:S.leg,legEq:S.legEq,legRech:S.legRech,bossVus:S.bossVus,recits:S.recits,maitrise:S.maitrise,nuit:S.nuit,aube:S.aube,regleNuit:S.regleNuit,ngp:S.ngp,ngpScene:S.ngpScene,reveJour:S.reveJour,reveRecord:S.reveRecord,reveBilan:S.reveBilan,bs:S.bs,mq:S.mq};
   S=Object.assign(neuf(),garde);S.stade=1+3*S.rb.start;S.rec=S.stade;S.depart=S.stade;
   enn=[];balles=[];bossActif=false;sel=-1;gagneFen=0;fenT=0;VS=null;majVsOverlay();
   Son.renaissance();calcEquipe();majGrille();majListes();majEscouade();majHud();toast('Renaissance : +'+g+' pelote'+(g>1?'s':''),'renaissance');succesVerif();majRenSignal();
