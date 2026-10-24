@@ -2031,7 +2031,8 @@ function majPV(dt){
   else pvEsc=Math.min(max,pvEsc+max*.04*dt);
   if(pvEsc<=0)chute();
 }
-// Escouade décimée : retour au stade de départ de la vie, toutes les pelotes en poche et la moitié des croquettes perdues.
+// Escouade décimée : retour au stade de départ de la vie, toutes les pelotes en poche et la moitié des croquettes perdues,
+// et la renaissance ne vaut plus que la progression regagnée depuis ce stade de départ.
 // Les pelotes restent au stade de la chute : on les récupère en y revenant sans retomber (une nouvelle chute les efface).
 const PERTE_OR=.5;
 function chute(){
@@ -2040,7 +2041,8 @@ function chute(){
   const st=S.stade,pel=Math.floor(S.pel),or=Math.floor(S.or*PERTE_OR),avant=S.perte;
   S.pel-=pel;S.or-=or;S.perte=pel?{pel,stade:st}:null;S.stats.chutes=(S.stats.chutes||0)+1;VS=null;majVsOverlay();
   Son.fuite();vibre('fort');
-  retraite(()=>{S.stade=S.depart||1;S.kills=0;recommenceStade();calcEquipe();majGrille();majEscouade();majHud();revenir()});
+  // La chute fait aussi repartir la valeur de renaissance : seule compte la progression regagnée depuis le stade de départ
+  retraite(()=>{S.stade=S.depart||1;S.rec=S.stade;S.kills=0;recommenceStade();calcEquipe();majGrille();majEscouade();majHud();revenir()});
   modale('Escouade décimée','Tes chats ont été submergés au stade '+st+'. Retour au stade '+(S.depart||1)+'.'+(pel?' '+pel+' pelote'+(pel>1?'s':'')+' sont restées sur place : reviens au stade '+st+' sans tomber pour les récupérer.':'')+(avant&&avant.pel?' Les '+avant.pel+' pelotes de la chute précédente sont perdues.':''),(pel?'-'+pel+' pelotes · ':'')+'-'+fmt(or)+' croquettes','Repartir');
 }
 function recupPerte(){if(S.perte&&S.stade>=S.perte.stade){const n=S.perte.pel;S.pel+=n;S.perte=null;toast('Pelotes récupérées : +'+n,'renaissance');Son.pieces();vibre('succes')}}
