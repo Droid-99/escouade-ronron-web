@@ -428,7 +428,7 @@ body.reve #t-esc,body.reve #t-def,body.reve #t-ren,body.reve #m-coll{display:non
       <div class="reg-bascules"><label class="bascule" for="r-vib"><input type="checkbox" id="r-vib"> Vibrations</label><label class="bascule" for="r-notif"><input type="checkbox" id="r-notif"> Alerte sac plein</label></div>
       <div class="reg-ligne"><span>Langue</span><div class="segment langues" role="group" aria-label="Langue"><button data-lang="fr">Français</button><button data-lang="en">English</button></div></div>
       <div class="reg-ligne"><span>Sauvegarde</span><div class="reg-sauve"><button class="btn second" id="b-export">Exporter</button><button class="btn second" id="b-import">Importer</button></div></div>
-      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 23 oct. 2026</p></div>
+      <div class="reg-pied"><button class="lien" id="b-intro">Revoir l’histoire</button><p class="reg-version">Version dev · 24 oct. 2026</p></div>
     </div>
   </div>
 
@@ -2439,7 +2439,7 @@ function carteBs(){
 }
 function majDefis(){
   majTickets();
-  const rv=S.best>=REVE_MIN?'<div class="defi reve-carte" title="'+T('Une partie par jour dans une autre dimension : tu joues les monstres, les chats sont la cible. Rapporte un familier exclusif.')+'"><div><h3>'+T('Le cauchemar d’un chat')+'</h3><div class="meta">'+(S.reveRecord?T('Record du rêve')+' : '+T('stade')+' '+S.reveRecord+' · ':'')+(reveDispo()?T('disponible'):T('reviens demain'))+'</div></div><button class="btn rose" data-reve="1"'+(reveDispo()&&!D?'':' disabled')+'>'+T('Dormir')+'</button></div>':'';
+  const rv=REVE_ACTIF&&S.best>=REVE_MIN?'<div class="defi reve-carte" title="'+T('Une partie par jour dans une autre dimension : tu joues les monstres, les chats sont la cible. Rapporte un familier exclusif.')+'"><div><h3>'+T('Le cauchemar d’un chat')+'</h3><div class="meta">'+(S.reveRecord?T('Record du rêve')+' : '+T('stade')+' '+S.reveRecord+' · ':'')+(reveDispo()?T('disponible'):T('reviens demain'))+'</div></div><button class="btn rose" data-reve="1"'+(reveDispo()&&!D?'':' disabled')+'>'+T('Dormir')+'</button></div>':'';
   $('l-def').innerHTML=carteMq()+carteBs()+rv+DEFIS.map(d=>{
     const ok=S.best>=d.deb,tk=S.defis.tickets[d.id];
     let meta=d.id==='boss'?'Niveau '+S.defis.niv.boss+' · gain '+(20+10*S.defis.niv.boss)+' éclats':d.id==='potager'?'Niveau '+S.defis.niv.potager+' · gain '+(20+8*S.defis.niv.potager)+' éclats':d.id==='chasse'?'Record : '+S.defis.rec.chasse+' vagues':'Record : '+S.defis.rec.mine+' éclats';
@@ -2810,7 +2810,9 @@ function carteMq(){
     '</div></div></div>';
 }
 const REVE_MIN=15;
-const reveDispo=()=>!S.reve&&S.best>=REVE_MIN&&S.reveJour!==jourReve();
+// Mode mis de côté pour l'instant (il mérite mieux qu'une carte discrète) : tout le code reste, rien ne s'affiche
+const REVE_ACTIF=false;
+const reveDispo=()=>REVE_ACTIF&&!S.reve&&S.best>=REVE_MIN&&S.reveJour!==jourReve();
 function gradeReve(b){return b>=70?6:b>=55?5:b>=40?4:b>=30?3:b>=20?2:b>=10?1:0}
 function reveEquipe(){
   if(!S.reve)return;
@@ -3408,7 +3410,8 @@ setInterval(sauve,5000);setInterval(majHud,200);
 
 $('logo').src=ASSETS.icone;$('logo2').src=ASSETS.icone;$('ic-croq').src=ASSETS.croquette;$('ic-pel').src=ASSETS.pelote;
 function demarre(data){
-  S=data&&data.S?normalise(data.S):(chargeReve()||charge()||neuf());
+  if(!REVE_ACTIF){try{localStorage.removeItem(CLE_REVE)}catch(e){}}
+  S=data&&data.S?normalise(data.S):((REVE_ACTIF&&chargeReve())||charge()||neuf());
   appliqueQuartier();
   if(!(data&&data.S))horsLigne();
   S.vu=Date.now();armeDeDepart();majTickets();verifRecrues();
